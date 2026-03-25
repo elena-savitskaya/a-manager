@@ -15,9 +15,6 @@ Backend:
  - Postgress
  - Auth
 
-Payment:
-- Plata by Mono
-
 Version Control:
 - GitHub
 
