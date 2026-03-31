@@ -65,7 +65,10 @@ Create .env.local file with the following variables:
 
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXTAUTH_SECRET="your_nextauth_secret"
+NEXTAUTH_SECRET=your_nextauth_secret
+GROQ_API_KEY=your-real-key
+GOOGLE_CLIENT_ID=your-client-id
+GOOGLE_CLIENT_SECRET=your-client-secret
 
 ### 4. Run the App
 
