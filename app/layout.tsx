@@ -8,6 +8,8 @@ import { AuthButton } from "@/components/auth-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { hasEnvVars } from "@/lib/utils";
 import { TabNav } from "@/components/tab-nav";
+import { MobileNav } from "@/components/mobile-nav";
+import { Logo } from "@/components/logo";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -44,9 +46,13 @@ export default function RootLayout({
             <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
               <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
                 <div className="flex gap-5 items-center font-semibold">
-                  <Link href="/">AIWordLab</Link>
+                  <Link href="/" className="flex items-center">
+                    <Logo size="md" />
+                  </Link>
                 </div>
-                <div className="flex items-center gap-3">
+
+                {/* Desktop Nav */}
+                <div className="hidden md:flex items-center gap-3">
                   <ThemeSwitcher />
                   {!hasEnvVars ? (
                     <EnvVarWarning />
@@ -56,9 +62,18 @@ export default function RootLayout({
                     </Suspense>
                   )}
                 </div>
+
+                {/* Mobile Burger Menu */}
+                <div className="flex md:hidden">
+                  <Suspense fallback={<div className="w-10 h-10" />}>
+                    <MobileNav
+                      authButton={<AuthButton />}
+                      themeSwitcher={<ThemeSwitcher />}
+                    />
+                  </Suspense>
+                </div>
               </div>
             </nav>
-
             <TabNav />
 
             <main className="flex-1">
@@ -66,7 +81,9 @@ export default function RootLayout({
             </main>
 
             <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs py-8">
-              <p className="text-muted-foreground">© 2026 AIWordLab. All rights reserved.</p>
+              <p className="text-muted-foreground flex items-center gap-2">
+                © 2026 <Logo size="sm" className="font-bold opacity-80" />. All rights reserved.
+              </p>
             </footer>
           </div>
         </ThemeProvider>

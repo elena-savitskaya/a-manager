@@ -2,11 +2,28 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BookOpen, PlusCircle, Dumbbell } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const tabs = [
-  { href: "/words", label: "📚 Слова" },
-  { href: "/add-word", label: "➕ Додати" },
-  { href: "/train", label: "🏋️ Тренування" },
+  {
+    href: "/words",
+    label: "Слова",
+    icon: <BookOpen className="w-4 h-4" />,
+    activeClass: "data-[state=active]:bg-blue-500/10 data-[state=active]:text-blue-500 data-[state=active]:border-blue-500/20 dark:data-[state=active]:bg-blue-500/20 dark:data-[state=active]:text-blue-400 dark:data-[state=active]:border-blue-500/30"
+  },
+  {
+    href: "/add-word",
+    label: "Додати",
+    icon: <PlusCircle className="w-4 h-4" />,
+    activeClass: "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/20 dark:data-[state=active]:bg-primary/20 dark:data-[state=active]:text-primary dark:data-[state=active]:border-primary/30"
+  },
+  {
+    href: "/train",
+    label: "Тренування",
+    icon: <Dumbbell className="w-4 h-4" />,
+    activeClass: "data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-500 data-[state=active]:border-emerald-500/20 dark:data-[state=active]:bg-emerald-500/20 dark:data-[state=active]:text-emerald-400 dark:data-[state=active]:border-emerald-500/30"
+  },
 ];
 
 const TAB_PATHS = tabs.map((t) => t.href);
@@ -18,29 +35,22 @@ export function TabNav() {
   if (!TAB_PATHS.includes(pathname)) return null;
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-5 py-3">
+    <div className="w-full max-w-lg mx-auto px-5 py-4">
       <Tabs value={pathname} onValueChange={(value) => router.push(value)}>
-        <TabsList className="w-full bg-transparent gap-2">
+        <TabsList className="w-full bg-transparent gap-2 h-auto p-0 flex-nowrap overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.href}
               value={tab.href}
-              className="flex-1        
-          border
-        h-9 px-4 py-2
-        transition-all
-rounded-md text-sm font-medium
-        bg-muted text-muted-foreground
-        hover:bg-muted/80
-
-        data-[state=active]:bg-primary
-        data-[state=active]:text-primary-foreground
-        data-[state=active]:shadow
-        dark:data-[state=active]:bg-white
-dark:data-[state=active]:text-black
-      "
+              className={cn(
+                "flex-1 flex flex-row items-center gap-2 px-3 py-2.5 rounded-xl border border-transparent transition-all duration-300",
+                "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                tab.activeClass,
+                "data-[state=active]:shadow-none data-[state=active]:font-bold"
+              )}
             >
-              {tab.label}
+              {tab.icon}
+              <span className="text-xs sm:text-sm whitespace-nowrap">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>

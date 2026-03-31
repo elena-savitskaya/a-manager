@@ -14,7 +14,7 @@ export default async function WordsList() {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pb-3">
         <p className="text-muted-foreground">
           {words?.length ?? 0} word{words?.length !== 1 ? "s" : ""} in your
           vocabulary
