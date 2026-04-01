@@ -1,6 +1,6 @@
 interface TranslationResult {
   translation: string;
-  examples: string[];
+  examples: { en: string; ua: string }[];
 }
 
 interface TranslationPreviewProps {
@@ -23,14 +23,19 @@ export function TranslationPreview({ result }: TranslationPreviewProps) {
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
           Приклади використання
         </p>
-        <ol className="flex flex-col gap-3">
+        <ol className="flex flex-col gap-4">
           {result.examples.map((ex, i) => (
             <li
               key={i}
-              className="text-sm text-muted-foreground flex gap-3 italic leading-relaxed"
+              className="text-sm flex flex-col gap-1 leading-relaxed group"
             >
-              <span className="text-primary font-bold">{i + 1}.</span>
-              {ex}
+              <div className="flex gap-3 text-foreground/80 font-medium italic">
+                <span className="text-primary font-bold not-italic">{i + 1}.</span>
+                {ex.en}
+              </div>
+              <div className="pl-7 text-xs text-muted-foreground/70 font-normal">
+                {ex.ua}
+              </div>
             </li>
           ))}
         </ol>

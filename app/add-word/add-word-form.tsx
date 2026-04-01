@@ -9,16 +9,17 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GradientInput } from "@/components/ui/gradient-input";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { Sparkles, Save, RotateCcw, Loader2 } from "lucide-react";
+import { Sparkles, Save, RotateCcw } from "lucide-react";
 import { TranslationPreview } from "./translation-preview";
+import { BrandedSpinner } from "@/components/ui/loader";
 
 type TranslationResult = {
   translation: string;
-  examples: string[];
+  examples: { en: string; ua: string }[];
 };
 
 type FormState = "idle" | "translating" | "preview" | "saving";
@@ -128,7 +129,7 @@ export function AddWordForm() {
         <div className="flex flex-col gap-2">
           <Label htmlFor="word">Слово</Label>
           <div className="flex gap-2 sm:flex-row flex-col items-center">
-            <Input
+            <GradientInput
               id="word"
               type="text"
               placeholder="введіть слово"
@@ -144,6 +145,8 @@ export function AddWordForm() {
                 if (e.key === "Enter" && !isTranslating) handleTranslate();
               }}
               disabled={isTranslating || isSaving}
+              wrapperClassName="flex-1 w-full"
+              className="text-lg"
             />
             <Button
               type="button"
@@ -153,7 +156,7 @@ export function AddWordForm() {
             >
               {isTranslating ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <BrandedSpinner className="mr-2 h-4 w-4" size={16} />
                   Перекладаю...
                 </>
               ) : (
@@ -185,7 +188,7 @@ export function AddWordForm() {
         >
           {isSaving ? (
             <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <BrandedSpinner className="mr-2 h-5 w-5" size={20} />
               Зберігаю...
             </>
           ) : (

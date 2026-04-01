@@ -15,9 +15,9 @@ export async function POST(request: Request) {
   try {
     const { text } = await generateText({
       model: groq("llama-3.3-70b-versatile"),
-      prompt: `Translate the English word "${word.trim()}" to Ukrainian and provide exactly 3 short example sentences in English.
+      prompt: `Translate the English word "${word.trim()}" to Ukrainian and provide exactly 3 short example sentences in English with their Ukrainian translations.
 Return ONLY valid JSON in this exact format, no other text:
-{"translation": "Ukrainian word here", "examples": ["sentence 1", "sentence 2", "sentence 3"]}`,
+{"translation": "Ukrainian word here", "examples": [{"en": "English sentence 1", "ua": "Ukrainian translation 1"}, {"en": "English sentence 2", "ua": "Ukrainian translation 2"}, {"en": "English sentence 3", "ua": "Ukrainian translation 3"}]}`,
     });
 
     const clean = text.trim().replace(/^```json\n?|```$/g, "").trim();

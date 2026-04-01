@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { GradientInput } from "@/components/ui/gradient-input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { GoogleIcon } from "@/components/icons";
@@ -94,7 +94,7 @@ export function SignUpForm({
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
+                <GradientInput
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -107,7 +107,7 @@ export function SignUpForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
+                <GradientInput
                   id="password"
                   type="password"
                   required
@@ -119,7 +119,7 @@ export function SignUpForm({
                 <div className="flex items-center">
                   <Label htmlFor="repeat-password">Repeat Password</Label>
                 </div>
-                <Input
+                <GradientInput
                   id="repeat-password"
                   type="password"
                   required

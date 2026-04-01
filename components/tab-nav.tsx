@@ -50,7 +50,7 @@ export function TabNav() {
               )}
             >
               {tab.icon}
-              <span className="text-xs sm:text-sm whitespace-nowrap">{tab.label}</span>
+              <span className="text-sm whitespace-nowrap">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>
