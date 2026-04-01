@@ -12,13 +12,13 @@ import { Check, X, Eye, Loader2 } from "lucide-react";
 
 export default function TrainPage() {
   return (
-    <div className="flex flex-col gap-12 py-10 w-full max-w-2xl mx-auto px-4">
+    <div className="max-w-4xl mx-auto flex flex-col gap-12 py-10 w-full px-4 sm:px-5">
       {/* Premium Header */}
-      <div className="space-y-4 text-center">
+      <div className="flex flex-col gap-2 items-center justify-center text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
           Тренування
         </h1>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-lg text-muted-foreground max-w-lg">
           Перевірте свої знання на флеш-картках.
         </p>
       </div>
@@ -50,8 +50,8 @@ export default function TrainPage() {
 
         <CardContent className="px-10">
           <div className="rounded-2xl border-2 border-dashed border-foreground/10 bg-muted/20 p-8 text-center text-muted-foreground/80 flex flex-col items-center gap-3">
-             <Eye className="w-6 h-6 opacity-30 text-primary" />
-             <p className="text-sm">Натисніть нижче, щоб побачити переклад</p>
+            <Eye className="w-6 h-6 opacity-30 text-primary" />
+            <p className="text-sm">Натисніть нижче, щоб побачити переклад</p>
           </div>
         </CardContent>
 

@@ -117,19 +117,19 @@ export default function AddWordPage() {
     result && (formState === "preview" || formState === "saving");
 
   return (
-    <div className="flex flex-col gap-12 py-10 w-full max-w-2xl mx-auto px-4">
+    <div className="max-w-4xl mx-auto flex flex-col gap-12 py-10 w-full px-4 sm:px-5">
       {/* Premium Header */}
-      <div className="space-y-4 text-center">
+      <div className="flex flex-col gap-2 items-center justify-center text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
           Додати Слово
         </h1>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-lg text-muted-foreground max-w-lg">
           Введіть слово англійською — AI запропонує переклад та приклади.
         </p>
       </div>
 
       <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
-        <CardHeader className="pb-4 pt-8">
+        <CardHeader>
           <CardDescription className="text-center font-medium">
             Заповніть форму нижче для автоматичного перекладу
           </CardDescription>
@@ -212,7 +212,7 @@ export default function AddWordPage() {
           )}
         </CardContent>
 
-        <CardFooter className="flex flex-col sm:flex-row gap-3 p-8 pt-2">
+        <CardFooter className="flex flex-col sm:flex-row gap-3">
           <Button
             className="w-full h-12 rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all flex-[2]"
             onClick={handleSave}

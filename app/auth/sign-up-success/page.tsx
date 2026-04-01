@@ -8,8 +8,8 @@ import {
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+    <div className="max-w-5xl mx-auto w-full full px-4 sm:px-5 py-10">
+      <div className="w-full max-w-sm mx-auto">
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>

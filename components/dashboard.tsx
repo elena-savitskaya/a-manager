@@ -61,7 +61,7 @@ export async function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col gap-12 py-8 w-full max-w-4xl mx-auto px-4">
+    <div className="flex flex-col gap-12">
       {/* Greeting Section */}
       <div className="space-y-2">
         <h1 className="text-4xl font-extrabold tracking-tight">
@@ -95,7 +95,7 @@ export async function Dashboard() {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold tracking-tight">Швидкі дії</h2>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {quickActions.map((action) => (
             <Link key={action.title} href={action.href} className="group">

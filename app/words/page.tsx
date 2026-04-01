@@ -4,13 +4,13 @@ import { Loader2 } from "lucide-react";
 
 export default function WordsPage() {
   return (
-    <div className="flex flex-col gap-12 py-10 w-full max-w-4xl mx-auto px-4">
+    <div className="max-w-4xl mx-auto flex flex-col gap-12 py-10 w-full px-4 sm:px-5">
       {/* Premium Header */}
-      <div className="space-y-4 text-center">
+      <div className="flex flex-col gap2 items-center justify-center text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
           Ваші Слова
         </h1>
-        <p className="text-lg text-muted-foreground max-w-lg mx-auto">
+        <p className="text-lg text-muted-foreground max-w-lg">
           Тут зібрані всі слова, які ви додали для вивчення. Відстежуйте свій прогрес та повторюйте старі слова.
         </p>
       </div>

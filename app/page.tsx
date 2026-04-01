@@ -13,7 +13,7 @@ async function PageContent() {
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center gap-20 max-w-5xl mx-auto w-full p-5 py-12">
+    <div className="max-w-5xl mx-auto w-full h-full px-4 sm:px-5 py-10">
       <Suspense>
         <PageContent />
       </Suspense>

@@ -35,9 +35,9 @@ export function TabNav() {
   if (!TAB_PATHS.includes(pathname)) return null;
 
   return (
-    <div className="w-full max-w-lg mx-auto px-5 py-4">
+    <div className="w-full max-w-lg mx-auto px-4 sm:px-5 py-4">
       <Tabs value={pathname} onValueChange={(value) => router.push(value)}>
-        <TabsList className="w-full bg-transparent gap-2 h-auto p-0 flex-nowrap overflow-x-auto no-scrollbar">
+        <TabsList className="w-full bg-transparent gap-2 flex-nowrap">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.href}
