@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { BookOpen, PlusCircle, Dumbbell, Menu, X } from "lucide-react";
+import { BookOpen, PlusCircle, Lightbulb, Menu, X } from "lucide-react";
 
 import { Logo } from "@/components/logo";
 
@@ -64,7 +64,7 @@ export function MobileNav({ authButton, themeSwitcher }: MobileNavProps) {
 
 
         {/* Footer Accent */}
-        <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-primary to-emerald-500 opacity-30" />
+        <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-primary to-emerald-500 opacity-50 animate-gradient" />
       </SheetContent>
     </Sheet>
   );

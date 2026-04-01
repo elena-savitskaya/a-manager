@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, PlusCircle, Dumbbell } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { BookOpen, PlusCircle, Lightbulb } from "lucide-react";
 
 const tabs = [
   {
@@ -21,7 +21,7 @@ const tabs = [
   {
     href: "/train",
     label: "Тренування",
-    icon: <Dumbbell className="w-4 h-4" />,
+    icon: <Lightbulb className="w-4 h-4" />,
     activeClass: "data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-500 data-[state=active]:border-emerald-500/20 dark:data-[state=active]:bg-emerald-500/20 dark:data-[state=active]:text-emerald-400 dark:data-[state=active]:border-emerald-500/30"
   },
 ];
