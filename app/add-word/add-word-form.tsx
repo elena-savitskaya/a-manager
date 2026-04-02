@@ -14,12 +14,13 @@ import { GradientInput } from "@/components/ui/gradient-input";
 import { Sparkles, Save, RotateCcw } from "lucide-react";
 import { TranslationPreview } from "./translation-preview";
 import { BrandedSpinner } from "@/components/ui/loader";
-import { addWordAction, translateWordAction } from "@/app/actions/words";
+import { addWordAction } from "@/app/actions/words";
 import { toast } from "sonner";
 
 type TranslationResult = {
   translation: string;
   examples: { en: string; ua: string }[];
+  correctedWord?: string;
 };
 
 export function AddWordForm() {
@@ -43,14 +44,31 @@ export function AddWordForm() {
     setResult(null);
 
     try {
-      const res = await translateWordAction(word.trim());
-      if (res.error) {
-        toast.error(res.error);
-      } else if (res.data) {
-        setResult(res.data as TranslationResult);
+      const response = await fetch("/api/ai/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ word: word.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Помилка перекладу");
       }
-    } catch {
-      toast.error("Невідома помилка при перекладі");
+
+      // Handle auto-correction
+      if (data.correctedWord && data.correctedWord.toLowerCase() !== word.trim().toLowerCase()) {
+        const oldWord = word.trim();
+        const newWord = data.correctedWord;
+        setWord(newWord);
+        toast.info(`Виправлено: ми замінили "${oldWord}" на "${newWord}"`, {
+          duration: 5000,
+        });
+      }
+
+      setResult(data as TranslationResult);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Невідома помилка при перекладі");
     } finally {
       setIsTranslating(false);
     }

@@ -36,11 +36,11 @@ export function DashboardActions() {
         {quickActions.map((action) => (
           <Link key={action.title} href={action.href} className="group">
             <Card className="h-full flex flex-col gap-2 border-none shadow-sm ring-1 ring-foreground/5 hover:ring-primary/50 transition-all duration-300 overflow-hidden relative">
-              <CardHeader className="flex flex-row items-center gap-4 pb-2">
+              <CardHeader className="flex flex-row items-center gap-4 pb-2 space-y-0">
                 <div className={`p-2.5 rounded-xl ${action.color} transition-transform group-hover:scale-110 duration-300`}>
                   {action.icon}
                 </div>
-                <CardTitle className="text-lg space-y-0">{action.title}</CardTitle>
+                <CardTitle className="text-lg">{action.title}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
                 <CardDescription className="text-sm leading-relaxed">

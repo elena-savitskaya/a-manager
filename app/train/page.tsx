@@ -24,15 +24,15 @@ export default function TrainPage() {
       <TrainingProgress current={3} total={5} />
 
       {/* Main Flashcard */}
-      <TrainingCard 
-        word={mockWord.original} 
+      <TrainingCard
+        word={mockWord.original}
         translation={mockWord.translation}
         isFlipped={isFlipped}
         onFlip={() => setIsFlipped(true)}
       />
 
       {/* Action Buttons */}
-      <TrainingControls 
+      <TrainingControls
         onKnow={() => setIsFlipped(false)}
         onNotKnow={() => setIsFlipped(false)}
       />

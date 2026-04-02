@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { WordFormSchema, TranslationResultSchema } from "@/lib/schemas";
 import { redirect } from "next/navigation";
-import { generateObject } from "ai";
+import { generateText } from "ai";
 import { createGroq } from "@ai-sdk/groq";
 
 const groq = createGroq({
@@ -23,15 +23,59 @@ export async function translateWordAction(word: string): Promise<ActionState> {
   }
 
   try {
-    const { object } = await generateObject({
-      model: groq("llama-3.3-70b-versatile"),
-      schema: TranslationResultSchema,
-      prompt: `Translate the English word "${word.trim()}" to Ukrainian and provide exactly 3 short example sentences in English with their Ukrainian translations.`,
+    const { text } = await generateText({
+      model: groq("llama-3.1-8b-instant"),
+      prompt: `Task: Translate the input "${word.trim()}" to Ukrainian.
+      
+      CRITICAL INSTRUCTIONS:
+      1. LANGUAGE & CHARACTER CHECK: If the input contains NON-LATIN characters or is NOT in English, return:
+         { "error_message": "Будь ласка, вводьте слова лише англійською мовою." }
+      
+      2. TYPO DETECTION: If there are obvious typos (e.g., "flowwwwww"), identify the correct English word.
+      
+      3. VALIDATE: If the input is clearly NOT a valid English word even after correction, return:
+         { "error_message": "Це не схоже на коректне англійське слово або фразу." }
+      
+      4. QUALITY TRANSLATION: Provide a natural, literary, and modern Ukrainian translation. Avoid robotic or literal translations that don't make sense (e.g., don't use 'похід' for 'go' commands).
+      
+      5. SENTENCE RULES: 
+         - Each example sentence MUST contain the English word being translated (or its corrected form).
+         - Ukrainian translations of these sentences must be grammatically perfect and natural-sounding.
+      
+      6. RESPONSE STRUCTURE: Return ONLY a JSON:
+         {
+           "translation": "natural Ukrainian translation",
+           "correctedWord": "the corrected word if applicable",
+           "examples": [
+             {"en": "Sentence containing the word", "ua": "Natural Ukrainian translation"},
+             {"en": "Another sentence", "ua": "Natural translation"},
+             {"en": "Third sentence", "ua": "Natural translation"}
+           ]
+         }
+      
+      Do not include any other text or explanations.`,
     });
 
-    return { success: true, data: object };
+    // Robust JSON extraction
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("AI returned invalid response format");
+    }
+
+    const object = JSON.parse(jsonMatch[0]);
+
+    // Check if AI detected nonsense or wrong language
+    if (object.error_message) {
+      return { error: object.error_message };
+    }
+
+    const validated = TranslationResultSchema.parse(object);
+    return { success: true, data: validated };
   } catch (err: unknown) {
     console.error("AI Error:", err);
+    if (err instanceof SyntaxError || (err as Error).message.includes("invalid response")) {
+      return { error: "Не вдалося розпізнати переклад. Спробуйте інше слово." };
+    }
     return { error: "AI translation failed. Please try again later." };
   }
 }

@@ -37,7 +37,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="h-screen min-h-screen flex flex-col">
+          <div className="min-h-dvh flex flex-col">
             <Navbar hasEnvVars={hasEnvVars} />
             <TabNav />
             <main className="flex-grow">
