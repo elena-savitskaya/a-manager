@@ -18,7 +18,7 @@ export default async function WordsList() {
         <p className="text-muted-foreground text-sm font-medium">
           {words?.length ?? 0} word{words?.length !== 1 ? "s" : ""} in vocabulary
         </p>
-        <Button asChild variant="ghost" className="text-primary hover:bg-primary/5 font-bold rounded-xl text-sm">
+        <Button asChild variant="ghost" className="text-primary hover:bg-primary/5 font-bold text-sm">
           <Link href="/add-word">+ Додати слово</Link>
         </Button>
       </div>
@@ -40,7 +40,7 @@ export default async function WordsList() {
               Додайте своє перше слово, щоб почати будувати власний інтелектуальний словник.
             </p>
           </div>
-          <Button asChild size="lg" className="rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-bold">
+          <Button asChild size="lg" className="shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-bold">
             <Link href="/add-word">Додати перше слово</Link>
           </Button>
         </div>

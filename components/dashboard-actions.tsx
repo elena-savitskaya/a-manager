@@ -5,18 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 export function DashboardActions() {
   const quickActions = [
     {
-      title: "Додати слово",
-      description: "Нові слова з прикладами від ШІ",
-      icon: <PlusCircle className="w-6 h-6 text-primary" />,
-      href: "/add-word",
-      color: "bg-primary/10",
-    },
-    {
       title: "Словник",
       description: "Список слів та їх прогрес",
       icon: <BookOpen className="w-6 h-6 text-blue-500" />,
       href: "/words",
       color: "bg-blue-500/10",
+    }, {
+      title: "Додати слово",
+      description: "Нові слова з прикладами від ШІ",
+      icon: <PlusCircle className="w-6 h-6 text-primary" />,
+      href: "/add-word",
+      color: "bg-primary/10",
     },
     {
       title: "Тренування",

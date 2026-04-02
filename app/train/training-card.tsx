@@ -33,7 +33,7 @@ export function TrainingCard({ word, translation, isFlipped, onFlip }: TrainingC
       <CardFooter className="flex gap-4 p-8 pt-0">
         <Button 
           variant="outline" 
-          className="flex-1 h-12 rounded-xl border-foreground/10 hover:bg-muted font-bold transition-all"
+          className="flex-1 border-foreground/10 hover:bg-muted font-bold transition-all"
           onClick={onFlip}
           disabled={isFlipped}
         >

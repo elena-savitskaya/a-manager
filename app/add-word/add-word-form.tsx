@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useActionState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -11,110 +11,57 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GradientInput } from "@/components/ui/gradient-input";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { Sparkles, Save, RotateCcw } from "lucide-react";
 import { TranslationPreview } from "./translation-preview";
 import { BrandedSpinner } from "@/components/ui/loader";
+import { addWordAction, translateWordAction } from "@/app/actions/words";
+import { toast } from "sonner";
 
 type TranslationResult = {
   translation: string;
   examples: { en: string; ua: string }[];
 };
 
-type FormState = "idle" | "translating" | "preview" | "saving";
-
 export function AddWordForm() {
   const [word, setWord] = useState("");
   const [result, setResult] = useState<TranslationResult | null>(null);
-  const [formState, setFormState] = useState<FormState>("idle");
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [isTranslating, setIsTranslating] = useState(false);
 
-  const isTranslating = formState === "translating";
-  const isSaving = formState === "saving";
-  const showPreview = result && (formState === "preview" || formState === "saving");
+  // useActionState for the saving process
+  const [state, formAction, isSaving] = useActionState(addWordAction, {});
+
+  // Handle server action errors
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state.error]);
 
   async function handleTranslate() {
     if (!word.trim()) return;
-    setFormState("translating");
-    setError(null);
+    setIsTranslating(true);
     setResult(null);
 
     try {
-      const res = await fetch("/api/ai/translate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ word: word.trim() }),
-      });
-
-      if (!res.ok) throw new Error("Помилка перекладу");
-
-      const data: TranslationResult = await res.json();
-      setResult(data);
-      setFormState("preview");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Невідома помилка");
-      setFormState("idle");
-    }
-  }
-
-  async function handleSave() {
-    if (!result) return;
-    setFormState("saving");
-    setError(null);
-
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("Необхідна авторизація");
-
-      // Check for duplicate
-      const { data: existing } = await supabase
-        .from("words")
-        .select("id")
-        .eq("user_id", user.id)
-        .ilike("word", word.trim())
-        .maybeSingle();
-
-      if (existing) {
-        setError(`Слово "${word.trim()}" вже є у вашому словнику.`);
-        setFormState("preview");
-        return;
+      const res = await translateWordAction(word.trim());
+      if (res.error) {
+        toast.error(res.error);
+      } else if (res.data) {
+        setResult(res.data as TranslationResult);
       }
-
-      const { error: dbError } = await supabase.from("words").insert({
-        user_id: user.id,
-        word: word.trim(),
-        translation: result.translation,
-        examples: result.examples,
-        status: "new",
-      });
-
-      if (dbError) throw new Error(dbError.message);
-
-      // Reset state and navigate
-      setWord("");
-      setResult(null);
-      setError(null);
-      setFormState("idle");
-      router.push("/words");
-      router.refresh(); // Refresh to show new data
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Помилка збереження");
-      setFormState("preview");
+    } catch {
+      toast.error("Невідома помилка при перекладі");
+    } finally {
+      setIsTranslating(false);
     }
   }
 
   function handleReset() {
     setWord("");
     setResult(null);
-    setFormState("idle");
-    setError(null);
   }
+
+  const showPreview = !!result;
 
   return (
     <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
@@ -128,29 +75,30 @@ export function AddWordForm() {
         {/* Word input */}
         <div className="flex flex-col gap-2">
           <Label htmlFor="word">Слово</Label>
-          <div className="flex gap-2 sm:flex-row flex-col items-center">
+          <div className="flex gap-4 sm:flex-row flex-col items-center">
             <GradientInput
               id="word"
+              name="word-input"
               type="text"
               placeholder="введіть слово"
               value={word}
               onChange={(e) => {
                 setWord(e.target.value);
-                if (result) {
-                  setResult(null);
-                  setFormState("idle");
-                }
+                if (result) setResult(null);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !isTranslating) handleTranslate();
+                if (e.key === "Enter" && !isTranslating) {
+                  e.preventDefault();
+                  handleTranslate();
+                }
               }}
               disabled={isTranslating || isSaving}
               wrapperClassName="flex-1 w-full"
-              className="text-lg"
+              className=""
             />
             <Button
               type="button"
-              className="shrink-0 h-11 px-6 rounded-xl font-bold shadow-sm transition-all sm:w-auto w-full"
+              className="h-12 shrink-0 px-6 font-bold shadow-sm transition-all sm:w-auto w-full"
               onClick={handleTranslate}
               disabled={!word.trim() || isTranslating || isSaving}
             >
@@ -169,46 +117,48 @@ export function AddWordForm() {
           </div>
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm text-center font-medium animate-in fade-in zoom-in-95">
-            {error}
-          </div>
-        )}
-
         {/* Translation preview */}
         {showPreview && <TranslationPreview result={result} />}
       </CardContent>
 
       <CardFooter className="flex flex-col sm:flex-row gap-3 p-6 pt-0">
-        <Button
-          className="w-full h-12 rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all flex-[2]"
-          onClick={handleSave}
-          disabled={!result || isSaving || isTranslating}
-        >
-          {isSaving ? (
-            <>
-              <BrandedSpinner className="mr-2 h-5 w-5" size={20} />
-              Зберігаю...
-            </>
-          ) : (
-            <>
-              <Save className="mr-2 h-5 w-5" />
-              Зберегти
-            </>
-          )}
-        </Button>
-        {result && (
+        <form action={formAction} className="w-full flex flex-col sm:flex-row gap-3">
+          {/* Hidden fields for server action */}
+          <input type="hidden" name="word" value={word} />
+          <input type="hidden" name="translation" value={result?.translation || ""} />
+          <input type="hidden" name="examples" value={JSON.stringify(result?.examples || [])} />
+
           <Button
-            variant="ghost"
-            className="w-full sm:w-auto h-12 rounded-xl font-medium text-muted-foreground gap-2 flex-1"
-            onClick={handleReset}
-            disabled={isSaving}
+            type="submit"
+            className="h-12 w-full font-bold shadow-lg hover:shadow-primary/20 transition-all sm:flex-[2]"
+            disabled={!result || isSaving || isTranslating}
           >
-            <RotateCcw className="w-4 h-4" /> Скинути
+            {isSaving ? (
+              <>
+                <BrandedSpinner className="mr-2 h-5 w-5" size={20} />
+                Зберігаю...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2 h-5 w-5" />
+                Зберегти
+              </>
+            )}
           </Button>
-        )}
+          {result && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-12 w-full sm:w-auto font-medium text-muted-foreground gap-2 flex-1"
+              onClick={handleReset}
+              disabled={isSaving}
+            >
+              <RotateCcw className="w-4 h-4" /> Скинути
+            </Button>
+          )}
+        </form>
       </CardFooter>
     </Card>
   );
 }
+

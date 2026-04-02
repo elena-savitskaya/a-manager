@@ -32,7 +32,7 @@ export function Hero() {
       <p className="text-lg text-muted-foreground max-w-md">
         Build your vocabulary with AI-powered translations and smart practice sessions.
       </p>
-      <Button asChild size="lg" className="rounded-xl">
+      <Button asChild size="lg">
         <Link href="/auth/sign-up">Get Started</Link>
       </Button>
     </div>

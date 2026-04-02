@@ -31,7 +31,7 @@ const GradientInput = React.forwardRef<HTMLInputElement, GradientInputProps>(
         <div className="bg-background rounded-[14.5px] overflow-hidden">
           <Input
             className={cn(
-              "border-none bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-11 px-4",
+              "border-none bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-5",
               className
             )}
             ref={ref}

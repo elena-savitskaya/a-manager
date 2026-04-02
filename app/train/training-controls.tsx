@@ -12,7 +12,7 @@ export function TrainingControls({ onNotKnow, onKnow, disabled = false }: Traini
     <div className="grid grid-cols-2 gap-4">
       <Button
         variant="destructive"
-        className="h-14 rounded-2xl font-bold text-lg shadow-lg hover:shadow-destructive/20 transition-all gap-2"
+        className="font-bold text-lg shadow-lg hover:shadow-destructive/20 transition-all gap-2"
         onClick={onNotKnow}
         disabled={disabled}
       >
@@ -20,7 +20,7 @@ export function TrainingControls({ onNotKnow, onKnow, disabled = false }: Traini
       </Button>
       <Button
         variant="default"
-        className="h-14 rounded-2xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all gap-2"
+        className="font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all gap-2"
         onClick={onKnow}
         disabled={disabled}
       >

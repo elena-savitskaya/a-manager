@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { BookOpen, PlusCircle, Lightbulb, Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import { Logo } from "@/components/logo";
 

@@ -12,16 +12,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GradientInput } from "@/components/ui/gradient-input";
-import { updateWord } from "./actions";
+import { updateWordAction } from "@/app/actions/words";
 import { Plus, Trash2, Save } from "lucide-react";
 import { BrandedSpinner } from "@/components/ui/loader";
+import { toast } from "sonner";
 
 interface EditWordDialogProps {
   word: {
     id: string;
     word: string;
     translation: string;
-    examples: any;
+    examples: { en: string; ua: string }[];
   };
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -51,19 +52,20 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { success, error } = await updateWord(word.id, {
+      const { error } = await updateWordAction(word.id, {
         translation,
         examples: examples.filter(ex => ex.en.trim() || ex.ua.trim()), // Filter empty ones
       });
 
-      if (success) {
+      if (!error) {
         onOpenChange(false);
+        toast.success("Слово успішно оновлено");
       } else {
-        alert("Помилка при збереженні: " + error);
+        toast.error("Помилка при збереженні: " + error);
       }
     } catch (err) {
       console.error("Save error:", err);
-      alert("Невідома помилка при збереженні.");
+      toast.error("Невідома помилка при збереженні.");
     } finally {
       setIsSaving(false);
     }
@@ -71,15 +73,15 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[525px] rounded-3xl border-none shadow-2xl p-0 overflow-hidden bg-background/95 backdrop-blur-xl">
+      <DialogContent className="sm:max-w-[525px] max-h-[90dvh] overflow-hidden flex flex-col rounded-3xl border-none shadow-2xl p-0 bg-background/95 backdrop-blur-xl">
         <DialogHeader className="p-6 pb-4 bg-primary/5 border-b border-primary/10">
           <DialogTitle className="text-2xl font-black tracking-tight">Редагувати слово</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Внесіть зміни до перекладу або прикладів вживання для слова <span className="text-foreground font-bold italic">"{word.word}"</span>.
+            Внесіть зміни до перекладу або прикладів вживання для слова <span className="text-foreground font-bold italic">&quot;{word.word}&quot;</span>.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-6 flex flex-col gap-6 overflow-hidden">
+        <div className="p-6 flex flex-col gap-6 flex-1 overflow-y-auto">
           {/* Translation - Fixed at content top */}
           <div className="flex flex-col gap-2 shrink-0">
             <Label htmlFor="translation" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
@@ -90,7 +92,7 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
               value={translation}
               onChange={(e) => setTranslation(e.target.value)}
               placeholder="Введіть переклад"
-              className="text-lg"
+              className=""
             />
           </div>
 
@@ -102,14 +104,14 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
               variant="ghost"
               size="sm"
               onClick={handleAddExample}
-              className="h-7 text-primary hover:bg-primary/10 rounded-lg text-xs font-bold flex items-center gap-1"
+              className="text-primary hover:bg-primary/10 font-bold flex items-center gap-1"
             >
               <Plus className="w-3 h-3" /> Додати приклад
             </Button>
           </div>
 
           {/* Examples - Scrollable area */}
-          <div className="flex-1 overflow-y-auto pr-1 -mr-1 custom-scrollbar min-h-[100px] max-h-[40vh]">
+          <div className="flex-1 pr-1 -mr-1 custom-scrollbar min-h-[100px] max-h-[40vh]">
             <div className="flex flex-col gap-5 py-2 px-1">
               {examples.map((ex, index) => (
                 <div key={index} className="bg-muted/30 rounded-2xl p-5 flex flex-col gap-4 relative group hover:bg-muted/50 transition-all border border-foreground/5 shadow-sm">
@@ -117,7 +119,7 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
                     variant="ghost"
                     size="icon"
                     onClick={() => handleRemoveExample(index)}
-                    className="absolute top-2 right-2 h-7 w-7 rounded-full bg-background/80 border border-foreground/5 text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all shadow-sm z-10"
+                    className="absolute top-1 right-1 rounded-full bg-background/80 border border-foreground/5 text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all shadow-sm z-10"
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
@@ -130,7 +132,7 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
                         onChange={(e) => handleUpdateExample(index, "en", e.target.value)}
                         placeholder="Введіть ваш приклад"
                         glowColor="primary"
-                        className="h-10 text-sm"
+                        className=""
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -140,7 +142,7 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
                         onChange={(e) => handleUpdateExample(index, "ua", e.target.value)}
                         placeholder="Український переклад"
                         glowColor="emerald"
-                        className="h-10 text-sm"
+                        className=""
                       />
                     </div>
                   </div>
@@ -149,7 +151,7 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
 
               {examples.length === 0 && (
                 <div className="py-8 text-center rounded-2xl border border-dashed border-foreground/10 bg-muted/5">
-                  <p className="text-xs text-muted-foreground font-medium">Немає прикладів. Натисніть "Додати приклад".</p>
+                  <p className="text-xs text-muted-foreground font-medium">Немає прикладів. Натисніть &quot;Додати приклад&quot;.</p>
                 </div>
               )}
             </div>
@@ -160,14 +162,14 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
           <Button
             variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="flex-1 rounded-xl font-bold h-12 text-muted-foreground hover:bg-foreground/5"
+            className="flex-1 font-bold text-muted-foreground hover:bg-foreground/5"
             disabled={isSaving}
           >
             Відмінити
           </Button>
           <Button
             onClick={handleSave}
-            className="flex-[2] rounded-xl font-bold h-12 shadow-lg shadow-primary/20"
+            className="flex-[2] font-bold shadow-lg shadow-primary/20"
             disabled={isSaving || !translation.trim()}
           >
             {isSaving ? (

@@ -4,8 +4,6 @@ import { BrandedHand } from "@/components/branded-hand";
 import { DashboardStats } from "@/components/dashboard-stats";
 import { DashboardActions } from "@/components/dashboard-actions";
 
-type StatusCount = { status: string; count: number };
-
 async function getWordStats(userId: string): Promise<{ new: number; learning: number; learned: number }> {
   const supabase = await createClient();
   const { data } = await supabase

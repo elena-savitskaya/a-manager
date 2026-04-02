@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { hasEnvVars } from "@/lib/utils";
 import { TabNav } from "@/components/tab-nav";
 import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -43,10 +43,11 @@ export default function RootLayout({
             <main className="flex-grow">
               {children}
             </main>
-            <Footer />
+            <Toaster />
           </div>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

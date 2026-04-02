@@ -69,11 +69,11 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
+      <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
+        <CardHeader className="text-center pb-8">
+          <CardTitle className="text-3xl font-black tracking-tight uppercase">Вхід</CardTitle>
+          <CardDescription className="text-muted-foreground font-medium">
+            Увійдіть у свій аккаунт, щоб продовжити навчання
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -109,8 +109,8 @@ export function LoginForm({
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+              <Button type="submit" className="w-full font-bold shadow-lg shadow-primary/20" disabled={isLoading}>
+                {isLoading ? "Вхід..." : "Увійти"}
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">

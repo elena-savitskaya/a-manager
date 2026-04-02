@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, BookOpen, Quote, Trash2, Pencil } from "lucide-react";
 import { useState } from "react";
-import { deleteWord } from "./actions";
+import { deleteWordAction } from "@/app/actions/words";
 import { EditWordDialog } from "./edit-word-dialog";
 import { BrandedSpinner } from "@/components/ui/loader";
 import {
@@ -34,7 +34,7 @@ interface WordItemProps {
     word: string;
     translation: string;
     status: string;
-    examples: any;
+    examples: { en: string; ua: string }[];
   };
 }
 
@@ -46,7 +46,7 @@ export function WordItem({ word }: WordItemProps) {
   async function handleDelete() {
     setIsDeleting(true);
     try {
-      await deleteWord(word.id);
+      await deleteWordAction(word.id);
       // Sheet will close automatically because WordItem will unmount
     } catch (error) {
       console.error("Failed to delete:", error);
@@ -76,7 +76,7 @@ export function WordItem({ word }: WordItemProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 rounded-full hover:bg-primary/10 text-muted-foreground/30 hover:text-primary transition-all active:scale-95"
+                  className="rounded-full hover:bg-primary/10 text-muted-foreground/30 hover:text-primary transition-all active:scale-95"
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
@@ -119,7 +119,7 @@ export function WordItem({ word }: WordItemProps) {
                 </div>
 
                 <div className="flex flex-col gap-6">
-                  {examples.map((ex: any, idx: number) => (
+                  {examples.map((ex: { en: string; ua: string }, idx: number) => (
                     <div key={idx} className="relative pl-6 group/item transition-all">
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-primary to-emerald-500 rounded-full opacity-20 group-hover/item:opacity-100 transition-opacity" />
                       <div className="flex flex-col gap-2">
@@ -142,12 +142,12 @@ export function WordItem({ word }: WordItemProps) {
             )}
           </div>
 
-          <div className="p-6 bg-muted/10 border-t border-foreground/5 shrink-0 flex gap-3">
+          <div className="p-6 bg-muted/10 border-t border-foreground/5 shrink-0 flex sm:flex-row flex-col gap-3">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
                   variant="destructive"
-                  className="flex-1 rounded-xl font-semibold shadow-sm hover:shadow-destructive/20 transition-all active:scale-95"
+                  className="flex-1 font-semibold shadow-sm hover:shadow-destructive/20 transition-all active:scale-95"
                   disabled={isDeleting}
                 >
                   {isDeleting ? <BrandedSpinner className="w-4 h-4" size={16} /> : <Trash2 className="w-4 h-4 mr-2" />}
@@ -158,14 +158,14 @@ export function WordItem({ word }: WordItemProps) {
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-xl font-bold">Ви впевнені?</AlertDialogTitle>
                   <AlertDialogDescription className="text-muted-foreground">
-                    Це дію неможливо скасувати. Слово <span className="font-bold text-foreground">"{word.word}"</span> буде назавжди видалено з вашого словника.
+                    Це дію неможливо скасувати. Слово <span className="font-bold text-foreground">&quot;{word.word}&quot;</span> буде назавжди видалено з вашого словника.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-3">
-                  <AlertDialogCancel className="rounded-xl border-foreground/10 hover:bg-foreground/5 flex-1">Скасувати</AlertDialogCancel>
+                  <AlertDialogCancel className="border-foreground/10 hover:bg-foreground/5 flex-1">Скасувати</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDelete}
-                    className="rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground shadow-lg shadow-destructive/20 flex-1 font-bold"
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground shadow-lg shadow-destructive/20 flex-1 font-bold"
                   >
                     Так, видалити
                   </AlertDialogAction>
@@ -176,7 +176,7 @@ export function WordItem({ word }: WordItemProps) {
             <Button
               variant="secondary"
               onClick={() => setIsEditDialogOpen(true)}
-              className="flex-1 rounded-xl font-semibold bg-primary/10 hover:bg-primary/20 text-primary border-none transition-all active:scale-95"
+              className="flex-1 font-semibold bg-primary/10 hover:bg-primary/20 text-primary border-none transition-all active:scale-95"
             >
               <Pencil className="w-4 h-4 mr-2" />
               Редагувати
