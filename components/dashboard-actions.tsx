@@ -29,7 +29,7 @@ export function DashboardActions() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Швидкі дії</h2>
+        <h4 className="text-[32px] font-bold tracking-tight">Швидкі дії</h4>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -37,17 +37,17 @@ export function DashboardActions() {
           <Link key={action.title} href={action.href} className="group">
             <Card className="h-full flex flex-col gap-2 border-none shadow-sm ring-1 ring-foreground/5 hover:ring-primary/50 transition-all duration-300 overflow-hidden relative">
               <CardHeader className="flex flex-row items-center gap-4 pb-2 space-y-0">
-                <div className={`p-2.5 rounded-xl ${action.color} transition-transform group-hover:scale-110 duration-300`}>
+                <div className={`w-12 h-12 flex items-center justify-center rounded-xl ${action.color} transition-transform group-hover:scale-110 duration-300`}>
                   {action.icon}
                 </div>
-                <CardTitle className="text-lg">{action.title}</CardTitle>
+                <h5 className="text-lg font-bold tracking-tight">{action.title}</h5>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
-                <CardDescription className="text-sm leading-relaxed">
+                <p className="text-sm leading-relaxed text-muted-foreground">
                   {action.description}
-                </CardDescription>
+                </p>
                 <div className="flex items-center text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Перейти <ArrowRight className="ml-1 w-3 h-3" />
+                  Перейти <ArrowRight className="ml-1 w-6 h-6" />
                 </div>
               </CardContent>
             </Card>

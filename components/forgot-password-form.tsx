@@ -38,7 +38,7 @@ export function ForgotPasswordForm({
       if (error) throw error;
       setSuccess(true);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Виникла помилка");
     } finally {
       setIsLoading(false);
     }
@@ -47,32 +47,34 @@ export function ForgotPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {success ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
+        <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
+          <CardHeader className="text-center pb-8 flex flex-col gap-2 space-y-0">
+            <CardTitle asChild className="text-[32px] font-black tracking-tight uppercase">
+              <h4>Перевірте пошту</h4>
+            </CardTitle>
+            <CardDescription className="text-muted-foreground font-medium">Інструкції з відновлення пароля надіслано</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive
-              a password reset email.
+            <p className="text-sm text-muted-foreground text-center">
+              Якщо ви зареєструвалися за допомогою електронної пошти та пароля, ви отримаєте лист для відновлення пароля.
             </p>
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-            <CardDescription>
-              Type in your email and we&apos;ll send you a link to reset your
-              password
+        <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
+          <CardHeader className="text-center pb-8 flex flex-col gap-2 space-y-0">
+            <CardTitle asChild className="text-[32px] font-black tracking-tight uppercase">
+              <h4>Відновити пароль</h4>
+            </CardTitle>
+            <CardDescription className="text-muted-foreground font-medium">
+              Введіть свою електронну пошту, і ми надішлемо вам посилання для скидання пароля
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleForgotPassword}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Електронна пошта</Label>
                   <GradientInput
                     id="email"
                     type="email"
@@ -83,17 +85,17 @@ export function ForgotPasswordForm({
                   />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send reset email"}
+                <Button type="submit" className="w-full font-bold shadow-lg shadow-primary/20" disabled={isLoading}>
+                  {isLoading ? "Надсилання..." : "Надіслати посилання"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
+                Вже маєте акаунт?{" "}
                 <Link
                   href="/auth/login"
                   className="underline underline-offset-4"
                 >
-                  Login
+                  Увійти
                 </Link>
               </div>
             </form>

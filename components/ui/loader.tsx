@@ -12,7 +12,7 @@ interface BrandedSpinnerProps {
  * A premium spinner that uses the brand's signature Blue-Primary-Emerald gradient.
  * Works by applying a linearGradient directly to the stroke of the Lucide Loader2 icon.
  */
-export function BrandedSpinner({ className, size = 20 }: BrandedSpinnerProps) {
+export function BrandedSpinner({ className, size = 24 }: BrandedSpinnerProps) {
   return (
     <div className={cn("relative flex items-center justify-center p-0.5", className)}>
       <svg width="0" height="0" className="absolute invisible">

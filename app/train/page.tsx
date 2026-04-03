@@ -11,8 +11,8 @@ export default function TrainPage() {
 
   // Mock data for now
   const mockWord = {
-    original: "Ephemeral",
-    translation: "Ефемерний, скороминущий"
+    original: "Example",
+    translation: "Example"
   };
 
   return (

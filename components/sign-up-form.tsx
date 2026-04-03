@@ -35,7 +35,7 @@ export function SignUpForm({
     setError(null);
 
     if (password !== repeatPassword) {
-      setError("Passwords do not match");
+      setError("Паролі не збігаються");
       setIsLoading(false);
       return;
     }
@@ -52,12 +52,12 @@ export function SignUpForm({
       // Supabase returns a fake success for already-registered emails.
       // An empty identities array means the email is already in use.
       if (data.user && data.user.identities?.length === 0) {
-        setError("An account with this email already exists. Please sign in instead.");
+        setError("Обліковий запис із цією електронною поштою вже існує. Будь ласка, увійдіть.");
         return;
       }
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Виникла помилка");
     } finally {
       setIsLoading(false);
     }
@@ -77,23 +77,25 @@ export function SignUpForm({
       });
       if (error) throw error;
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Виникла помилка");
       setIsLoading(false);
     }
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign up</CardTitle>
-          <CardDescription>Create a new account</CardDescription>
+      <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
+        <CardHeader className="text-center pb-8 flex flex-col gap-2 space-y-0">
+          <CardTitle asChild className="text-[32px] font-black tracking-tight uppercase">
+            <h4>Реєстрація</h4>
+          </CardTitle>
+          <CardDescription className="text-muted-foreground font-medium">Створіть новий акаунт, щоб почати навчання</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Електронна пошта</Label>
                 <GradientInput
                   id="email"
                   type="email"
@@ -105,7 +107,7 @@ export function SignUpForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Пароль</Label>
                 </div>
                 <GradientInput
                   id="password"
@@ -117,7 +119,7 @@ export function SignUpForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="repeat-password">Repeat Password</Label>
+                  <Label htmlFor="repeat-password">Повторіть пароль</Label>
                 </div>
                 <GradientInput
                   id="repeat-password"
@@ -128,13 +130,13 @@ export function SignUpForm({
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating an account..." : "Sign up"}
+              <Button type="submit" className="w-full font-bold shadow-lg shadow-primary/20" disabled={isLoading}>
+                {isLoading ? "Створення акаунту..." : "Зареєструватися"}
               </Button>
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground font-medium">
+                <div className="h-px flex-1 bg-border" />
+                <span>Або за допомогою</span>
+                <div className="h-px flex-1 bg-border" />
               </div>
               <Button
                 type="button"
@@ -144,13 +146,13 @@ export function SignUpForm({
                 disabled={isLoading}
               >
                 <GoogleIcon className="mr-2" />
-                Sign in with Google
+                Зареєструватися через Google
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
+              Вже маєте акаунт?{" "}
               <Link href="/auth/login" className="underline underline-offset-4">
-                Login
+                Увійти
               </Link>
             </div>
           </form>

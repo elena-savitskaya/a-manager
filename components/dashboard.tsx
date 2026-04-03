@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { BrandedHand } from "@/components/branded-hand";
 import { DashboardStats } from "@/components/dashboard-stats";
 import { DashboardActions } from "@/components/dashboard-actions";
+import { getUkrainianPlural } from "@/lib/utils";
 
 async function getWordStats(userId: string): Promise<{ new: number; learning: number; learned: number }> {
   const supabase = await createClient();
@@ -33,16 +34,16 @@ export async function Dashboard() {
     <div className="flex flex-col gap-8">
       {/* Greeting Section */}
       <div className="flex flex-col gap-4">
-        <h1 className="text-4xl font-extrabold tracking-tight flex items-center gap-4">
+        <h2 className="text-5xl font-extrabold tracking-tight flex items-center gap-4">
           Привіт
           <BrandedHand />
-        </h1>
-        <p className="text-xl text-muted-foreground">
+        </h2>
+        <p className="text-lg text-muted-foreground">
           У вашому словнику вже{" "}
           <span className="font-bold text-foreground inline-flex items-center gap-1">
             {total}
           </span>{" "}
-          {total === 1 ? "слово" : total < 5 && total > 0 ? "слова" : "слів"}.
+          {getUkrainianPlural(total, ["слово", "слова", "слів"])}.
         </p>
       </div>
 

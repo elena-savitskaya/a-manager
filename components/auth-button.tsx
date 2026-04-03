@@ -11,11 +11,11 @@ export async function AuthButton() {
 
   if (!user) {
     return (
-      <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-        <Button asChild size="sm" variant={"outline"} className="w-full md:w-auto rounded-xl h-11 md:h-9">
+      <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+        <Button asChild variant={"outline"} className="w-full md:w-auto rounded-xl h-12 px-6">
           <Link href="/auth/login">Увійти</Link>
         </Button>
-        <Button asChild size="sm" variant={"default"} className="w-full md:w-auto rounded-xl h-11 md:h-9 font-bold">
+        <Button asChild variant={"default"} className="w-full md:w-auto rounded-xl h-12 px-6 font-bold">
           <Link href="/auth/sign-up">Зареєструватися</Link>
         </Button>
       </div>

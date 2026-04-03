@@ -25,12 +25,12 @@ const ThemeSwitcher = () => {
     return null;
   }
 
-  const ICON_SIZE = 16;
+  const ICON_SIZE = 24;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size={"sm"}>
+        <Button variant="ghost" size={"icon"} className="w-12 h-12 rounded-xl">
           {theme === "light" ? (
             <Sun
               key="light"
@@ -59,15 +59,15 @@ const ThemeSwitcher = () => {
         >
           <DropdownMenuRadioItem className="flex gap-2" value="light">
             <Sun size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>Light</span>
+            <span>Світла</span>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex gap-2" value="dark">
             <Moon size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>Dark</span>
+            <span>Темна</span>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex gap-2" value="system">
             <Laptop size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>System</span>
+            <span>Системна</span>
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

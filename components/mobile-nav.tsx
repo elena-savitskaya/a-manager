@@ -18,9 +18,9 @@ export function MobileNav({ authButton, themeSwitcher }: MobileNavProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden relative group">
+        <Button variant="ghost" size="icon" className="md:hidden relative group w-12 h-12 rounded-xl">
           <Menu className="h-6 w-6 transition-transform group-hover:scale-110" />
-          <span className="sr-only">Toggle menu</span>
+          <span className="sr-only">Переключити меню</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[310px] sm:w-[400px] border-none p-0 flex flex-col gap-0 shadow-2xl overflow-hidden ring-1 ring-foreground/5">

@@ -17,7 +17,7 @@ export function LogoutButton() {
     <Button 
       variant="default" 
       onClick={logout} 
-      className="w-full md:w-auto rounded-xl h-11 md:h-9 font-bold shadow-sm"
+      className="w-full md:w-auto rounded-xl h-12 px-6 font-bold shadow-sm"
     >
       Вийти
     </Button>

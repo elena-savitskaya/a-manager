@@ -5,7 +5,7 @@ interface BrandedHandProps {
   size?: number;
 }
 
-export function BrandedHand({ className = "", size = 40 }: BrandedHandProps) {
+export function BrandedHand({ className = "", size = 24 }: BrandedHandProps) {
   return (
     <div className={`relative inline-flex items-center justify-center ${className}`}>
       {/* Radiant Multi-color Aura (Subtle depth) */}

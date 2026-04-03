@@ -6,17 +6,12 @@ interface LogoProps {
 }
 
 export function Logo({ className, size = "md" }: LogoProps) {
-  const sizeClasses = {
-    sm: "text-lg",
-    md: "text-xl",
-    lg: "text-3xl",
-  };
-
   return (
-    <span className={cn("font-black tracking-tighter select-none", sizeClasses[size], className)}>
-      <span className="text-primary">AI</span>
-      <span className="text-blue-500">Word</span>
-      <span className="text-emerald-500">Lab</span>
-    </span>
+    <div className={cn("flex items-center gap-2", className)}>
+      <span className={cn("font-bold tracking-tighter select-none ml-1", size === "lg" ? "text-2xl" : "text-lg")}>
+        <span className="text-blue-500">Word</span>
+        <span className="text-emerald-500">Trainer</span>
+      </span>
+    </div>
   );
 }

@@ -61,7 +61,7 @@ export function AddWordForm() {
         const oldWord = word.trim();
         const newWord = data.correctedWord;
         setWord(newWord);
-        toast.info(`Виправлено: ми замінили "${oldWord}" на "${newWord}"`, {
+        toast.info(`"${oldWord}" виправлено на "${newWord}"`, {
           duration: 5000,
         });
       }
@@ -98,7 +98,7 @@ export function AddWordForm() {
               id="word"
               name="word-input"
               type="text"
-              placeholder="введіть слово"
+              placeholder="Введіть слово"
               value={word}
               onChange={(e) => {
                 setWord(e.target.value);
@@ -122,12 +122,12 @@ export function AddWordForm() {
             >
               {isTranslating ? (
                 <>
-                  <BrandedSpinner className="mr-2 h-4 w-4" size={16} />
+                  <BrandedSpinner className="mr-2 h-6 w-6" size={24} />
                   Перекладаю...
                 </>
               ) : (
                 <>
-                  <Sparkles className="mr-2 h-4 w-4" />
+                  <Sparkles className="mr-2 h-6 w-6" />
                   Перекласти
                 </>
               )}
@@ -153,12 +153,12 @@ export function AddWordForm() {
           >
             {isSaving ? (
               <>
-                <BrandedSpinner className="mr-2 h-5 w-5" size={20} />
-                Зберігаю...
+                <BrandedSpinner className="mr-2 h-6 w-6" size={24} />
+                Збереження...
               </>
             ) : (
               <>
-                <Save className="mr-2 h-5 w-5" />
+                <Save className="mr-2 h-6 w-6" />
                 Зберегти
               </>
             )}
@@ -171,7 +171,7 @@ export function AddWordForm() {
               onClick={handleReset}
               disabled={isSaving}
             >
-              <RotateCcw className="w-4 h-4" /> Скинути
+              <RotateCcw className="w-6 h-6" /> Скинути
             </Button>
           )}
         </form>

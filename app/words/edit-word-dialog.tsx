@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GradientInput } from "@/components/ui/gradient-input";
 import { updateWordAction } from "@/app/actions/words";
-import { Plus, Trash2, Save } from "lucide-react";
+import { Plus, Trash2, Save, Pencil } from "lucide-react";
 import { BrandedSpinner } from "@/components/ui/loader";
 import { toast } from "sonner";
 
@@ -72,117 +71,132 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[525px] max-h-[90dvh] overflow-hidden flex flex-col rounded-3xl border-none shadow-2xl p-0 bg-background/95 backdrop-blur-xl">
-        <DialogHeader className="p-6 pb-4 bg-primary/5 border-b border-primary/10">
-          <DialogTitle className="text-2xl font-black tracking-tight">Редагувати слово</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            Внесіть зміни до перекладу або прикладів вживання для слова <span className="text-foreground font-bold italic">&quot;{word.word}&quot;</span>.
-          </DialogDescription>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full sm:max-w-md border-l-0 sm:border-l bg-background/95 backdrop-blur-xl p-0 overflow-hidden">
+        <div className="h-full flex flex-col">
+          <SheetHeader className="p-6 pb-4 bg-muted/30 border-b border-foreground/5 shrink-0 text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary/10 shrink-0">
+                <Pencil className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex flex-col gap-1 min-w-0 flex-1 text-left">
+                <p className="text-base font-medium text-primary/70 tracking-tight leading-tight">
+                  Редагувати слово
+                </p>
+                <SheetTitle asChild>
+                  <h5 className="text-2xl font-black text-foreground break-words leading-tight">
+                    {word.word}
+                  </h5>
+                </SheetTitle>
+                <SheetDescription className="sr-only">
+                  Вікно для редагування перекладу та прикладів слова {word.word}
+                </SheetDescription>
+              </div>
+            </div>
+          </SheetHeader>
 
-        <div className="p-6 flex flex-col gap-6 flex-1 overflow-y-auto">
-          {/* Translation - Fixed at content top */}
-          <div className="flex flex-col gap-2 shrink-0">
-            <Label htmlFor="translation" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
-              Переклад (UA)
-            </Label>
-            <GradientInput
-              id="translation"
-              value={translation}
-              onChange={(e) => setTranslation(e.target.value)}
-              placeholder="Введіть переклад"
-              className=""
-            />
-          </div>
+          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
+            <div className="flex flex-col gap-2 shrink-0">
+              <Label htmlFor="translation" className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
+                Переклад (UA)
+              </Label>
+              <GradientInput
+                id="translation"
+                value={translation}
+                onChange={(e) => setTranslation(e.target.value)}
+                placeholder="Введіть переклад"
+                className="h-12"
+              />
+            </div>
 
-          <div className="flex items-center justify-between px-1 shrink-0">
-            <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
-              Приклади вживання
-            </Label>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleAddExample}
-              className="text-primary hover:bg-primary/10 font-bold flex items-center gap-1"
-            >
-              <Plus className="w-3 h-3" /> Додати приклад
-            </Button>
-          </div>
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center justify-between px-1 shrink-0">
+                <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+                  Приклади використання
+                </Label>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleAddExample}
+                  className="text-primary hover:bg-primary/10 font-bold flex items-center gap-1 text-sm"
+                >
+                  <Plus className="w-6 h-6" /> Додати приклад
+                </Button>
+              </div>
 
-          {/* Examples - Scrollable area */}
-          <div className="flex-1 pr-1 -mr-1 custom-scrollbar min-h-[100px] max-h-[40vh]">
-            <div className="flex flex-col gap-5 py-2 px-1">
-              {examples.map((ex, index) => (
-                <div key={index} className="bg-muted/30 rounded-2xl p-5 flex flex-col gap-4 relative group hover:bg-muted/50 transition-all border border-foreground/5 shadow-sm">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveExample(index)}
-                    className="absolute top-1 right-1 rounded-full bg-background/80 border border-foreground/5 text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all shadow-sm z-10"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
+              <div className="flex flex-col gap-5">
+                {examples.map((ex, index) => (
+                  <div key={index} className="bg-muted/30 rounded-2xl p-5 flex flex-col gap-4 relative group hover:bg-muted/50 transition-all border border-foreground/5 shadow-sm">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveExample(index)}
+                      className="absolute top-2 right-2 w-12 h-12 rounded-xl text-muted-foreground/20 hover:text-destructive hover:bg-transparent transition-all z-10"
+                    >
+                      <Trash2 className="h-6 w-6" />
+                    </Button>
 
-                  <div className="flex flex-col gap-3 min-w-0 pr-6">
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary/50 px-1">Англійська</span>
-                      <GradientInput
-                        value={ex.en}
-                        onChange={(e) => handleUpdateExample(index, "en", e.target.value)}
-                        placeholder="Введіть ваш приклад"
-                        glowColor="primary"
-                        className=""
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500/50 px-1">Переклад</span>
-                      <GradientInput
-                        value={ex.ua}
-                        onChange={(e) => handleUpdateExample(index, "ua", e.target.value)}
-                        placeholder="Український переклад"
-                        glowColor="emerald"
-                        className=""
-                      />
+                    <div className="flex flex-col gap-3 min-w-0 pr-6">
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-primary/50 px-1">Англійська</span>
+                        <GradientInput
+                          value={ex.en}
+                          onChange={(e) => handleUpdateExample(index, "en", e.target.value)}
+                          placeholder="Введіть ваш приклад"
+                          glowColor="primary"
+                          className="h-11"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500/50 px-1">Переклад</span>
+                        <GradientInput
+                          value={ex.ua}
+                          onChange={(e) => handleUpdateExample(index, "ua", e.target.value)}
+                          placeholder="Український переклад"
+                          glowColor="emerald"
+                          className="h-11"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
-              {examples.length === 0 && (
-                <div className="py-8 text-center rounded-2xl border border-dashed border-foreground/10 bg-muted/5">
-                  <p className="text-xs text-muted-foreground font-medium">Немає прикладів. Натисніть &quot;Додати приклад&quot;.</p>
-                </div>
-              )}
+                {examples.length === 0 && (
+                  <div className="py-12 text-center rounded-2xl border border-dashed border-foreground/10 bg-muted/5">
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Немає прикладів</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <DialogFooter className="p-6 bg-muted/30 border-t border-foreground/5 gap-3">
-          <Button
-            variant="ghost"
-            onClick={() => onOpenChange(false)}
-            className="flex-1 font-bold text-muted-foreground hover:bg-foreground/5"
-            disabled={isSaving}
-          >
-            Відмінити
-          </Button>
-          <Button
-            onClick={handleSave}
-            className="flex-[2] font-bold shadow-lg shadow-primary/20"
-            disabled={isSaving || !translation.trim()}
-          >
-            {isSaving ? (
-              <BrandedSpinner size={20} />
-            ) : (
-              <div className="flex items-center gap-2">
-                <Save className="w-4 h-4" />
-                Зберегти зміни
-              </div>
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <div className="p-6 bg-muted/10 border-t border-foreground/5 shrink-0 flex sm:flex-row flex-col gap-3 mt-auto">
+            <Button
+              variant="ghost"
+              onClick={() => onOpenChange(false)}
+              className="flex-1 font-bold text-muted-foreground hover:bg-foreground/5"
+              disabled={isSaving}
+            >
+              Скасувати
+            </Button>
+            <Button
+              onClick={handleSave}
+              className="flex-[2] font-bold shadow-lg shadow-primary/20 h-12"
+              disabled={isSaving || !translation.trim()}
+            >
+              {isSaving ? (
+                <BrandedSpinner size={20} />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Save className="w-6 h-6" />
+                  Зберегти зміни
+                </div>
+              )}
+            </Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+
   );
 }

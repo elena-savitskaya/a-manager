@@ -15,4 +15,16 @@ export interface TranslationResult {
   examples: Example[];
 }
 
-export type WordStatus = "new" | "learning" | "mastered";
+export interface WordFormValues {
+  word: string;
+  translation: string;
+  examples: Example[];
+}
+
+export type WordStatus = "new" | "learning" | "learned";
+
+export type ActionState = {
+  error?: string;
+  success?: boolean;
+  data?: unknown;
+};

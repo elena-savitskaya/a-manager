@@ -36,7 +36,7 @@ export function UpdatePasswordForm({
       // Update this route to redirect to an authenticated route. The user already has an active session.
       router.push("/protected");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Виникла помилка");
     } finally {
       setIsLoading(false);
     }
@@ -44,30 +44,32 @@ export function UpdatePasswordForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-          <CardDescription>
-            Please enter your new password below.
+      <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
+        <CardHeader className="text-center pb-8 flex flex-col gap-2 space-y-0">
+          <CardTitle asChild className="text-[32px] font-black tracking-tight uppercase">
+            <h4>Відновити пароль</h4>
+          </CardTitle>
+          <CardDescription className="text-muted-foreground font-medium">
+            Будь ласка, введіть свій новий пароль нижче.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleForgotPassword}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="password">New password</Label>
+                <Label htmlFor="password">Новий пароль</Label>
                 <GradientInput
                   id="password"
                   type="password"
-                  placeholder="New password"
+                  placeholder="Введіть новий пароль"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save new password"}
+              <Button type="submit" className="w-full font-bold shadow-lg shadow-primary/20" disabled={isLoading}>
+                {isLoading ? "Збереження..." : "Зберегти новий пароль"}
               </Button>
             </div>
           </form>
