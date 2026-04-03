@@ -137,7 +137,7 @@ export function WordItem({ word }: WordItemProps) {
                   variant={word.status === "learned" ? "info" : "success"}
                   className="rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest shadow-sm"
                 >
-                  {word.status === "learned" ? "Мною вивчено" : "У процесі вивчення"}
+                  {word.status === "learned" ? "Вивчено" : "У процесі вивчення"}
                 </Badge>
               </div>
             </SheetHeader>

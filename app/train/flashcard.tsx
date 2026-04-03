@@ -89,7 +89,6 @@ export function Flashcard({
           x: isInteractive ? x : 0,
           rotate: isInteractive ? rotate : 0,
           opacity: isInteractive ? opacity : 1,
-          scale: isInteractive ? 1 : 0.95,
         }}
         drag={isInteractive ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
@@ -102,16 +101,17 @@ export function Flashcard({
       >
 
         <motion.div
+          initial={false}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ type: "spring", stiffness: 150, damping: 20 }}
           className="w-full h-full relative preserve-3d cursor-pointer"
           onClick={() => isInteractive && onFlip()}
         >
-          <Card className="absolute inset-0 flex items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden">
-            <h3 className="text-5xl font-black tracking-tighter">{word.word}</h3>
+          <Card className="bg-card absolute inset-0 flex items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden">
+            <h3 className="text-4xl font-black text-primary">{word.word}</h3>
           </Card>
           <Card
-            className="absolute inset-0 flex items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden"
+            className="bg-card absolute inset-0 flex items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden"
             style={{ transform: "rotateY(180deg)" }}
           >
             <h3 className="text-4xl font-black text-primary">{word.translation}</h3>

@@ -10,7 +10,7 @@ import { WORD_STATUS } from "@/lib/constants";
 
 export async function translateWordAction(word: string): Promise<ActionState> {
   const { data, error } = await AIService.translateWord(word);
-  
+
   if (error) {
     return { error };
   }
@@ -114,21 +114,19 @@ export async function getWordsForTraining(): Promise<{ success: boolean; data?: 
     const { user, supabase } = await getRequiredServerUser();
     if (!user) return { success: false, error: "Необхідна авторизація" };
 
-    // Fetch words that are NOT learned
     const { data, error } = await supabase
       .from("words")
       .select("*")
       .eq("user_id", user.id)
       .neq("status", WORD_STATUS.LEARNED)
-      .limit(20); // Get a pool of 20 to randomize locally
+      .limit(20);
 
     if (error) throw error;
     if (!data || data.length === 0) {
       return { success: true, data: [] };
     }
 
-    // Randomize and take 10
-    const shuffled = [...data].sort(() => 0.5 - Math.random()).slice(0, 10);
+    const shuffled = [...data].sort(() => 0.5 - Math.random()).slice(0, 6);
 
     return { success: true, data: shuffled };
   } catch (error: any) {
@@ -151,6 +149,7 @@ export async function updateWordStatus(id: string, status: string) {
   }
 
   revalidatePath("/words");
-  revalidatePath("/"); // Update dashboard stats
+  revalidatePath("/train");
+  revalidatePath("/");
   return { success: true };
 }
