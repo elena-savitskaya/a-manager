@@ -108,3 +108,49 @@ export async function deleteWordAction(id: string) {
   revalidatePath("/words");
   return { success: true };
 }
+
+export async function getWordsForTraining(): Promise<{ success: boolean; data?: any[]; error?: string }> {
+  try {
+    const { user, supabase } = await getRequiredServerUser();
+    if (!user) return { success: false, error: "Необхідна авторизація" };
+
+    // Fetch words that are NOT learned
+    const { data, error } = await supabase
+      .from("words")
+      .select("*")
+      .eq("user_id", user.id)
+      .neq("status", WORD_STATUS.LEARNED)
+      .limit(20); // Get a pool of 20 to randomize locally
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      return { success: true, data: [] };
+    }
+
+    // Randomize and take 10
+    const shuffled = [...data].sort(() => 0.5 - Math.random()).slice(0, 10);
+
+    return { success: true, data: shuffled };
+  } catch (error: any) {
+    console.error("Error fetching training words:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateWordStatus(id: string, status: string) {
+  const { supabase } = await getRequiredServerUser();
+
+  const { error } = await supabase
+    .from("words")
+    .update({ status })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error updating word status:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/words");
+  revalidatePath("/"); // Update dashboard stats
+  return { success: true };
+}

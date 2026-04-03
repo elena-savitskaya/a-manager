@@ -15,13 +15,10 @@ export function TrainingProgress({ current, total }: TrainingProgressProps) {
         <Badge variant="secondary" className="px-3 py-1 text-sm font-bold uppercase tracking-wider">
           {current} / {total} слів
         </Badge>
-        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-          {percentage}% виконано
-        </p>
       </div>
 
       <div className="w-full">
-        <Progress value={percentage} className="h-3 bg-muted/50" />
+        <Progress value={percentage} className="h-0.5 bg-muted/20" />
       </div>
     </div>
   );
