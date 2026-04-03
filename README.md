@@ -1,57 +1,61 @@
-# 🌐 A-Manager App (Starter Project)
+# 🌐 WordTrainer — Conversational English Mastery
 
-A-Manager is a starter web application built with Next.js 15, featuring user authentication, an agent-based architecture, and integration with Supabase/Postgres.
+**WordTrainer** is a modern web application for practicing English vocabulary, combining AI-powered translations with proven learning techniques like Flashcards and Matching Games.
 
-The UI is built using Tailwind CSS and Shadcn UI, providing a modern and responsive design.
+Built on **Next.js 15**, **Supabase**, and **AI SDK**, it provides a premium user experience with a focus on speed, aesthetics, and meaningful learning.
 
-This project serves as a foundation for building scalable web applications using the agent-based approach (AntiGravity) and MCP services.
+---
 
-## 📋 Current Features
+## 🚀 Key Features
 
-- 🔒 Secure user authentication (NextAuth)
-- 🏗 Agent-based project structure using .agents:
-  - rules/project-rules.md - coding rules and standards
-  - skills/shadcn - UI components handling
-  - skills/supabase-postgres-best-practices - database best practices
-- 🌐 Responsive UI with Tailwind CSS and Shadcn UI
-- 🧩 Agent-driven development with AntiGravity (code automation)
-- 🛠 MCP services for integrating external tools and APIs
-- 🗄 Database integration with Supabase/Postgres
+### 🧠 AI-Powered Intelligence
+- **Instant Translation**: Get precise translations powered by Groq/Google AI.
+- **Contextual Examples**: Automatically generate usage examples for every word to improve retention.
+- **Auto-Correction**: Smart typo fixing and word validation during the entry process.
+
+### 🃏 Advanced Training Workflow
+- **Flashcards (DuoCards Mode)**: High-performance gesture control (swipe left/right) with realistic physics-based animations.
+- **Matching Game**: A consolidation phase where you match words to translations against the clock.
+- **Two-Stage Cycle**: Ensures a transition from passive recognition to active recall.
+
+### 💾 Persistence & Reliability
+- **Zustand Persistence**: Your training progress is instantly saved to `localStorage`. Refresh the page or switch tabs, and you'll resume exactly where you left off.
+- **Session Lock**: A robust server-side pre-fetching mechanism that eliminates UI flickering during navigation.
+
+---
 
 ## 🛠️ Tech Stack
 
 **Frontend:**
-- Next.js 15
-- React 19
-- TypeScript
-- Tailwind CSS (+ tailwind-merge, clsx)
-- Shadcn UI
+- **Next.js 15 (App Router)**: High performance and server-side rendering.
+- **Zustand**: State management with persistence middleware.
+- **Framer Motion**: Smooth, premium UI animations.
+- **Tailwind CSS & Shadcn UI**: Modern, responsive, and "glassmorphism" design.
 
-**Backend:**
-- Supabase + Postgres
+**Backend & AI:**
+- **Supabase (PostgreSQL)**: Secure word storage and authentication.
+- **Vercel AI SDK**: Flexible integration with Groq and Google Gemini models.
 
-**Agent & Automation:**
-- AntiGravity for agent development
-- MCP (Model Context Protocol) services for integrations
-- Skills and Rules for code automation
+---
 
-## 🏗 Project Structure
+## 🏗️ Project Structure
 
-- `.agents/rules` - project rules and coding standards  
-- `.agents/skills` - modules for UI, database, and API handling  
-- `app/` - Next.js pages and routing  
-- `components/` - React components  
-- `lib/` - utilities and configuration  
+- `app/train/` - Training session logic and components.
+- `app/words/` - Word list management and details.
+- `app/add-word/` - AI-driven form for quick vocabulary entry.
+- `lib/store/` - Zustand store for state persistence.
+- `components/ui/` - Custom UI component library.
 
-## Installation & Setup
+---
+
+## ⚙️ Installation & Setup
 
 ### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/elena-savitskaya/a-manager.git
-```
-
 cd a-manager
+```
 
 ### 2. Install Dependencies
 
@@ -59,19 +63,32 @@ cd a-manager
 npm install
 ```
 
-### 3. Setup Environment Variables
+### 3. Setup Environment Variables (.env.local)
 
+```env
 Create .env.local file with the following variables:
 
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXTAUTH_SECRET=your_nextauth_secret
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-or-anon-key
+
+# Vercel Deployment URL (no trailing slash)
+NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
+
+# GROQ API key — https://console.groq.com/keys
 GROQ_API_KEY=your-real-key
+
+# Google OAuth (for Auth)
 GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
+```
 
 ### 4. Run the App
 
 ```bash
 npm run dev
 ```
+
+---
+
+## 🎨 Design Principles
+The app utilizes a **Premium Dark Mode** with focus on gradients, micro-animations, and tactile feedback (active:scale-95), providing the feel of a native mobile application.
