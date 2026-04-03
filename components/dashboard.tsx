@@ -36,7 +36,7 @@ export async function Dashboard() {
       <div className="flex flex-col gap-4">
         <h2 className="text-5xl font-extrabold tracking-tight flex items-center gap-4">
           Привіт
-          <BrandedHand />
+          <BrandedHand size={44} />
         </h2>
         <p className="text-lg text-muted-foreground">
           У вашому словнику вже{" "}

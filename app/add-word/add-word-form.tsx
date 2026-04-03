@@ -11,21 +11,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GradientInput } from "@/components/ui/gradient-input";
-import { Sparkles, Save, RotateCcw } from "lucide-react";
-import { TranslationPreview } from "./translation-preview";
+import { GradientTextarea } from "@/components/ui/gradient-textarea";
+import { Sparkles, Save, RotateCcw, Plus, Trash2 } from "lucide-react";
 import { BrandedSpinner } from "@/components/ui/loader";
 import { addWordAction } from "@/app/actions/words";
 import { toast } from "sonner";
 
-type TranslationResult = {
-  translation: string;
-  examples: { en: string; ua: string }[];
-  correctedWord?: string;
-};
+type Example = { en: string; ua: string };
 
 export function AddWordForm() {
   const [word, setWord] = useState("");
-  const [result, setResult] = useState<TranslationResult | null>(null);
+  const [translation, setTranslation] = useState("");
+  const [examples, setExamples] = useState<Example[]>([]);
   const [isTranslating, setIsTranslating] = useState(false);
 
   // useActionState for the saving process
@@ -41,7 +38,6 @@ export function AddWordForm() {
   async function handleTranslate() {
     if (!word.trim()) return;
     setIsTranslating(true);
-    setResult(null);
 
     try {
       const response = await fetch("/api/ai/translate", {
@@ -66,7 +62,9 @@ export function AddWordForm() {
         });
       }
 
-      setResult(data as TranslationResult);
+      setTranslation(data.translation || "");
+      setExamples(data.examples || []);
+      toast.success("Варіант від ШІ отримано!");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Невідома помилка при перекладі");
     } finally {
@@ -76,34 +74,46 @@ export function AddWordForm() {
 
   function handleReset() {
     setWord("");
-    setResult(null);
+    setTranslation("");
+    setExamples([]);
   }
 
-  const showPreview = !!result;
+  function addExample() {
+    setExamples([...examples, { en: "", ua: "" }]);
+  }
+
+  function removeExample(index: number) {
+    setExamples(examples.filter((_, i) => i !== index));
+  }
+
+  function updateExample(index: number, field: keyof Example, value: string) {
+    const newExamples = [...examples];
+    newExamples[index] = { ...newExamples[index], [field]: value };
+    setExamples(newExamples);
+  }
 
   return (
     <Card className="border-none shadow-xl ring-1 ring-foreground/5 rounded-3xl overflow-hidden bg-muted/30">
       <CardHeader>
         <CardDescription className="text-center font-medium">
-          Заповніть форму нижче для автоматичного перекладу
+          Введіть слово та його переклад. Можна скористатися допомогою ШІ.
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-6">
+      <CardContent className="flex flex-col gap-8">
         {/* Word input */}
         <div className="flex flex-col gap-2">
-          <Label htmlFor="word">Слово</Label>
-          <div className="flex gap-4 sm:flex-row flex-col items-center">
+          <Label htmlFor="word" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70 ml-1">
+            Слово англійською
+          </Label>
+          <div className="flex gap-4 sm:flex-row flex-col items-start">
             <GradientInput
               id="word"
               name="word-input"
               type="text"
-              placeholder="Введіть слово"
+              placeholder="Введіть слово англійською"
               value={word}
-              onChange={(e) => {
-                setWord(e.target.value);
-                if (result) setResult(null);
-              }}
+              onChange={(e) => setWord(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !isTranslating) {
                   e.preventDefault();
@@ -112,44 +122,120 @@ export function AddWordForm() {
               }}
               disabled={isTranslating || isSaving}
               wrapperClassName="flex-1 w-full"
-              className=""
             />
             <Button
               type="button"
-              className="h-12 shrink-0 px-6 font-bold shadow-sm transition-all sm:w-auto w-full"
+              variant="outline"
+              className="h-12 shrink-0 px-6 font-bold shadow-sm transition-all sm:w-auto w-full border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-primary"
               onClick={handleTranslate}
               disabled={!word.trim() || isTranslating || isSaving}
             >
               {isTranslating ? (
                 <>
                   <BrandedSpinner className="mr-2 h-6 w-6" size={24} />
-                  Перекладаю...
+                  Аналізую...
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 h-6 w-6" />
-                  Перекласти
+                  Допомога ШІ
                 </>
               )}
             </Button>
           </div>
         </div>
 
-        {/* Translation preview */}
-        {showPreview && <TranslationPreview result={result} />}
+        {/* Translation input */}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="translation" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70 ml-1">
+            Переклад українською
+          </Label>
+          <GradientTextarea
+            id="translation"
+            name="translation-input"
+            placeholder="Введіть переклад або натисніть 'Допомога ШІ'"
+            value={translation}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setTranslation(e.target.value)}
+            disabled={isSaving}
+            glowColor="emerald"
+            className="min-h-[80px]"
+          />
+        </div>
+
+        {/* Examples Section */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between ml-1">
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
+              Приклади використання (опціонально)
+            </Label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={addExample}
+              className="h-8 text-xs font-bold gap-1 hover:text-primary transition-colors"
+            >
+              <Plus className="w-3 h-3" /> Додати приклад
+            </Button>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {examples.length === 0 && (
+              <p className="text-sm text-muted-foreground/50 italic text-center py-4 bg-background/20 rounded-2xl border border-dashed border-muted-foreground/10">
+                Прикладів поки немає. ШІ може згенерувати їх для вас.
+              </p>
+            )}
+            {examples.map((ex, i) => (
+              <div key={i} className="flex flex-col gap-3 p-4 rounded-2xl bg-background/40 border border-foreground/5 relative group transition-all hover:border-primary/20">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 h-7 w-7 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => removeExample(i)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-primary/40 uppercase tracking-widest w-4 text-right">{i + 1}.</span>
+                    <input
+                      className="bg-transparent border-none focus:ring-0 text-sm font-medium w-full p-0 italic text-foreground/90"
+                      value={ex.en}
+                      placeholder="Речення англійською..."
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateExample(i, "en", e.target.value)}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 pl-6">
+                    <input
+                      className="bg-transparent border-none focus:ring-0 text-xs w-full p-0 text-muted-foreground"
+                      value={ex.ua}
+                      placeholder="Переклад прикладу..."
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateExample(i, "ua", e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col sm:flex-row gap-3 p-6 pt-0">
+      <CardFooter className="flex flex-col sm:flex-row gap-3 p-6 mt-4 bg-muted/20 border-t border-foreground/5">
         <form action={formAction} className="w-full flex flex-col sm:flex-row gap-3">
           {/* Hidden fields for server action */}
           <input type="hidden" name="word" value={word} />
-          <input type="hidden" name="translation" value={result?.translation || ""} />
-          <input type="hidden" name="examples" value={JSON.stringify(result?.examples || [])} />
+          <input type="hidden" name="translation" value={translation} />
+          <input
+            type="hidden"
+            name="examples"
+            value={JSON.stringify(examples.filter(ex => ex.en.trim() && ex.ua.trim()))}
+          />
 
           <Button
             type="submit"
             className="h-12 w-full font-bold shadow-lg hover:shadow-primary/20 transition-all sm:flex-[2]"
-            disabled={!result || isSaving || isTranslating}
+            disabled={!word.trim() || !translation.trim() || isSaving || isTranslating}
           >
             {isSaving ? (
               <>
@@ -159,11 +245,11 @@ export function AddWordForm() {
             ) : (
               <>
                 <Save className="mr-2 h-6 w-6" />
-                Зберегти
+                Зберегти в словник
               </>
             )}
           </Button>
-          {result && (
+          {(word || translation || examples.length > 0) && (
             <Button
               type="button"
               variant="ghost"
@@ -171,7 +257,7 @@ export function AddWordForm() {
               onClick={handleReset}
               disabled={isSaving}
             >
-              <RotateCcw className="w-6 h-6" /> Скинути
+              <RotateCcw className="w-5 h-5" /> Скинути
             </Button>
           )}
         </form>

@@ -1,4 +1,4 @@
-import { getUkrainianPlural } from "@/lib/utils";
+import { getUkrainianPlural, cn } from "@/lib/utils";
 
 interface DashboardStatsProps {
   stats: {
@@ -15,23 +15,32 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
   const statCards = [
     {
       status: getUkrainianPlural(total, ["Слово", "Слова", "Слів"]),
-      count: total
+      count: total,
+      colorClass: "text-blue-600 dark:text-blue-400"
     },
-    { status: "Вчити", count: toLearn },
-    { status: "Вивчено", count: stats.learned },
+    { 
+      status: "Вчити", 
+      count: toLearn,
+      colorClass: "text-primary"
+    },
+    { 
+      status: "Вивчено", 
+      count: stats.learned,
+      colorClass: "text-emerald-600 dark:text-emerald-400"
+    },
   ];
 
   return (
     <div className="flex items-center justify-between w-full bg-muted/30 backdrop-blur-sm rounded-xl border border-foreground/5 shadow-sm overflow-hidden">
-      {statCards.map(({ status, count }, index) => (
+      {statCards.map(({ status, count, colorClass }) => (
         <div
           key={status}
-          className="flex-1 flex flex-col gap-2 items-center justify-center py-6 text-center group cursor-default relative after:absolute after:right-0 after:top-[10%] after:h-[80%] after:w-px after:bg-foreground/5 last:after:hidden"
+          className="flex-1 flex flex-col gap-1 items-center justify-center py-6 text-center group cursor-default relative after:absolute after:right-0 after:top-[10%] after:h-[80%] after:w-px after:bg-foreground/5 last:after:hidden"
         >
-          <span className="text-[32px] font-black text-foreground tracking-tighter">
+          <span className={cn("text-[24px] font-black tracking-tighter", colorClass)}>
             {count}
           </span>
-          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors">
             {status}
           </p>
         </div>
