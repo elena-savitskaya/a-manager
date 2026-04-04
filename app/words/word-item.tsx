@@ -81,7 +81,7 @@ export function WordItem({ word }: WordItemProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="w-12 h-12 rounded-full hover:bg-primary/10 text-muted-foreground/30 hover:text-primary transition-all active:scale-95"
+                  className="w-12 h-12 rounded-full hover:bg-primary/10 text-muted-foreground/90 hover:text-primary transition-all active:scale-95"
                 >
                   <MoreVertical className="h-6 w-6" />
                 </Button>

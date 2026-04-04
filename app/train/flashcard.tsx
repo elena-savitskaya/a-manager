@@ -103,17 +103,51 @@ export function Flashcard({
           initial={false}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ type: "spring", stiffness: 150, damping: 20 }}
-          className="w-full h-full relative preserve-3d cursor-pointer"
+          className="w-full h-full relative preserve-3d cursor-pointer shadow-2xl rounded-[2.5rem]"
           onClick={() => isInteractive && onFlip()}
         >
-          <Card className="bg-card absolute inset-0 flex items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden">
-            <h3 className="text-4xl font-black text-primary">{word.word}</h3>
+          {/* Front Side */}
+          <Card className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden shadow-none">
+            <motion.div
+              style={{ opacity: greenOpacity, scale: labelScale }}
+              className="absolute top-12 right-12 border-4 border-emerald-500 rounded-xl px-4 py-1 rotate-12 pointer-events-none"
+            >
+              <span className="text-emerald-500 font-black text-2xl tracking-tighter uppercase font-uk">Знаю</span>
+            </motion.div>
+            <motion.div
+              style={{ opacity: redOpacity, scale: labelScale }}
+              className="absolute top-12 left-12 border-4 border-rose-500 rounded-xl px-4 py-1 -rotate-12 pointer-events-none"
+            >
+              <span className="text-rose-500 font-black text-2xl tracking-tighter uppercase font-uk">Важко</span>
+            </motion.div>
+            <h3 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none">
+              {word.word}
+            </h3>
+            <p className="mt-4 text-zinc-500 dark:text-zinc-400 font-medium text-sm uppercase tracking-[0.2em] opacity-40">Натисніть, щоб перевернути</p>
           </Card>
+
           <Card
-            className="bg-card absolute inset-0 flex items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden"
+            className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-900 overflow-hidden shadow-none"
             style={{ transform: "rotateY(180deg)" }}
           >
-            <h3 className="text-4xl font-black text-primary">{word.translation}</h3>
+            <motion.div
+              style={{ opacity: greenOpacity, scale: labelScale }}
+              className="absolute top-12 right-12 border-4 border-emerald-500 rounded-xl px-4 py-1 rotate-12 pointer-events-none"
+            >
+              <span className="text-emerald-500 font-black text-2xl tracking-tighter uppercase font-uk">Знаю</span>
+            </motion.div>
+            <motion.div
+              style={{ opacity: redOpacity, scale: labelScale }}
+              className="absolute top-12 left-12 border-4 border-rose-500 rounded-xl px-4 py-1 -rotate-12 pointer-events-none"
+            >
+              <span className="text-rose-500 font-black text-2xl tracking-tighter uppercase font-uk">Важко</span>
+            </motion.div>
+            <h3 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none">
+              {word.translation}
+            </h3>
+            <div className="mt-6">
+              <p className="text-zinc-500 dark:text-zinc-400 font-medium text-sm uppercase tracking-[0.2em] opacity-40">Переклад</p>
+            </div>
           </Card>
         </motion.div>
       </motion.div>
