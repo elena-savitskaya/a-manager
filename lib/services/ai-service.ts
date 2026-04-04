@@ -15,43 +15,33 @@ export class AIService {
       return { error: "Word is required" };
     }
 
+    const systemPrompt = `
+    Ви - професійний англійський редактор та лінгвіст з глибоким знанням оксфордських та кембриджських словників.
+    Ваше завдання - перекласти англійське слово або фразу на українську та ПЕРЕВІРИТИ ПРАВОПИС.
+
+    Ваші суворі правила:
+    1. Надайте точний, контекстуальний переклад.
+    2. ПЕРЕВІРКА ПРАВОПИСУ: Ретельно проаналізуйте кожне слово. Якщо є хоча б одна друкарська помилка (наприклад, "gou" замість "go", "scholl" замість "school", "flowwww" замість "flow"), ви ПОВИННІ вказати виправлений варіант у полі "correctedWord". Будьте суворими до помилок.
+    3. ПРАВИЛО ФРАЗ: Якщо це фраза (наприклад, "go to school"), зберігайте її структуру, але виправляйте помилки всередині неї.
+    4. Надайте 3 якісних приклади використання з перекладом.
+    5. МОВНЕ ОБМЕЖЕННЯ: Якщо введено кирилицю, поверніть: "Будь ласка, вводьте слова лише англійською мовою." у "translation" та null у "correctedWord".
+    6. НЕРОЗПІЗНАНЕ: Якщо вхідні дані не мають сенсу в англійській мові, поверніть "не розпізнано" у "translation" та null у "correctedWord".
+
+    Поверніть відповідь ТІЛЬКИ у форматі JSON:
+    {
+      "translation": "переклад",
+      "correctedWord": "виправлений варіант або null",
+      "examples": [
+        { "en": "Example", "ua": "Переклад прикладу" }
+      ]
+    }
+    `;
+
     try {
       const { text } = await generateText({
         model: groq("llama-3.1-8b-instant"),
-        prompt: `Task: Translate the input "${word.trim()}" to Ukrainian.
-        
-        CRITICAL INSTRUCTIONS:
-        1. LANGUAGE & CHARACTER CHECK: If the input contains NON-LATIN characters or is NOT in English, return:
-           { "error_message": "Будь ласка, вводьте слова лише англійською мовою." }
-        
-        2. TYPO DETECTION: If there are obvious spelling errors (e.g., "flowwwwww"), identify the correct English word. 
-        
-        4. PROFESSIONAL DICTIONARY TRANSLATION: Act as a high-quality professional dictionary (like Google Translate, Oxford, or Cambridge). 
-           - Provide the most common, direct, and natural Ukrainian translation for the given word or phrase.
-           - For phrases (like "get ready"), provide the natural Ukrainian equivalent (e.g., "готуватися"), not a literal word-for-word translation.
-           - If a word has multiple common meanings, provide the most frequent one or a couple of synonymous translations separated by commas.
-           - Avoid robotic, overly formal, or "AI-style" explanations.
-        
-        5. VALIDATE: If the input is clearly NOT any recognizable English word or phrase even after correcting spelling, return:
-           { "error_message": "Це не схоже на коректне англійське слово або фразу." }
-        
-        6. SENTENCE RULES: 
-           - Each example sentence MUST contain the English word or EXACT phrase being translated.
-           - Sentences must be idiomatic, useful for learners, and show the word in a clear context.
-           - Ukrainian translations of these sentences must be natural and literary.
-        
-        7. RESPONSE STRUCTURE: Return ONLY a JSON:
-           {
-             "translation": "direct natural Ukrainian translation",
-             "correctedWord": "the corrected spelling if applicable",
-             "examples": [
-               {"en": "Example 1", "ua": "UA Translation 1"},
-               {"en": "Example 2", "ua": "UA Translation 2"},
-               {"en": "Example 3", "ua": "UA Translation 3"}
-             ]
-           }
-        
-        Do not include text like 'Here is the JSON' or explanations.`,
+        system: systemPrompt,
+        prompt: `Input: "${word.trim()}"`,
       });
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -69,8 +59,8 @@ export class AIService {
       return { data: validated };
     } catch (err: unknown) {
       console.error("AIService Error:", err);
-      if (err instanceof SyntaxError || (err as Error).message.includes("invalid response")) {
-        return { error: "Не вдалося отримати коректний переклад. Спробуйте інше слово." };
+      if (err instanceof z.ZodError) {
+        return { error: "ШІ повернув некоректні дані. Спробуйте інше слово." };
       }
       return { error: "Помилка роботи штучного інтелекту. Спробуйте ще раз пізніше." };
     }

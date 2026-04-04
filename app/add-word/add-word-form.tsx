@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GradientInput } from "@/components/ui/gradient-input";
 import { GradientTextarea } from "@/components/ui/gradient-textarea";
-import { Sparkles, Save, RotateCcw, Plus, Trash2 } from "lucide-react";
+import { Sparkles, Save, RotateCcw, Plus, Trash2, Check, X } from "lucide-react";
 import { BrandedSpinner } from "@/components/ui/loader";
 import { addWordAction } from "@/app/actions/words";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Example = { en: string; ua: string };
 
@@ -24,6 +25,7 @@ export function AddWordForm() {
   const [translation, setTranslation] = useState("");
   const [examples, setExamples] = useState<Example[]>([]);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [suggestedWord, setSuggestedWord] = useState<string | null>(null);
 
   // useActionState for the saving process
   const [state, formAction, isSaving] = useActionState(addWordAction, {});
@@ -37,6 +39,14 @@ export function AddWordForm() {
 
   async function handleTranslate() {
     if (!word.trim()) return;
+
+    // Client-side validation for English word/phrase
+    const latinOnlyRegex = /^[a-zA-Z\s'-/]+$/;
+    if (!latinOnlyRegex.test(word.trim())) {
+      toast.error("Дозволені лише латинські літери");
+      return;
+    }
+
     setIsTranslating(true);
 
     try {
@@ -52,19 +62,20 @@ export function AddWordForm() {
         throw new Error(data.error || "Помилка перекладу");
       }
 
-      // Handle auto-correction
       if (data.correctedWord && data.correctedWord.toLowerCase() !== word.trim().toLowerCase()) {
-        const oldWord = word.trim();
-        const newWord = data.correctedWord;
-        setWord(newWord);
-        toast.info(`"${oldWord}" виправлено на "${newWord}"`, {
-          duration: 5000,
-        });
+        setSuggestedWord(data.correctedWord);
+      } else {
+        setSuggestedWord(null);
       }
 
       setTranslation(data.translation || "");
       setExamples(data.examples || []);
-      toast.success("Варіант від ШІ отримано!");
+
+      if (data.translation === "не розпізнано") {
+        toast.warning("ШІ не зміг розпізнати слово");
+      } else {
+        toast.success("Варіант від ШІ отримано!");
+      }
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Невідома помилка при перекладі");
     } finally {
@@ -72,10 +83,19 @@ export function AddWordForm() {
     }
   }
 
+  function applyCorrection() {
+    if (suggestedWord) {
+      setWord(suggestedWord);
+      setSuggestedWord(null);
+      toast.success("Виправлення застосовано");
+    }
+  }
+
   function handleReset() {
     setWord("");
     setTranslation("");
     setExamples([]);
+    setSuggestedWord(null);
   }
 
   function addExample() {
@@ -106,42 +126,84 @@ export function AddWordForm() {
           <Label htmlFor="word" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70 ml-1">
             Слово англійською
           </Label>
-          <div className="flex gap-4 sm:flex-row flex-col items-start">
-            <GradientInput
-              id="word"
-              name="word-input"
-              type="text"
-              placeholder="Введіть слово англійською"
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !isTranslating) {
-                  e.preventDefault();
-                  handleTranslate();
-                }
-              }}
-              disabled={isTranslating || isSaving}
-              wrapperClassName="flex-1 w-full"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              className="h-12 shrink-0 px-6 font-bold shadow-sm transition-all sm:w-auto w-full border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-primary"
-              onClick={handleTranslate}
-              disabled={!word.trim() || isTranslating || isSaving}
-            >
-              {isTranslating ? (
-                <>
-                  <BrandedSpinner className="mr-2 h-6 w-6" size={24} />
-                  Аналізую...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-6 w-6" />
-                  Допомога ШІ
-                </>
+          <div className="flex flex-col gap-1 w-full">
+            <div className="flex gap-4 sm:flex-row flex-col items-start w-full">
+              <GradientInput
+                id="word"
+                name="word-input"
+                placeholder="Введіть слово англійською"
+                value={word}
+                onChange={(e) => {
+                  setWord(e.target.value);
+                  if (suggestedWord) setSuggestedWord(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !isTranslating) {
+                    e.preventDefault();
+                    handleTranslate();
+                  }
+                }}
+                disabled={isTranslating || isSaving}
+                wrapperClassName="flex-1 w-full"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="h-12 shrink-0 px-6 font-bold shadow-sm transition-all sm:w-auto w-full border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-primary"
+                onClick={handleTranslate}
+                disabled={!word.trim() || isTranslating || isSaving}
+              >
+                {isTranslating ? (
+                  <>
+                    <BrandedSpinner className="mr-2 h-6 w-6" size={16} />
+                    Аналізую...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-6 w-6" />
+                    Допомога ШІ
+                  </>
+                )}
+              </Button>
+            </div>
+            <AnimatePresence mode="wait">
+              {suggestedWord && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -5 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -5 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-2 p-2 px-4 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-between group backdrop-blur-sm">
+                    <p className="text-sm text-foreground/90 py-1">
+                      Можливо, ви мали на увазі: <span className="font-bold text-primary italic">"{suggestedWord}"</span>?
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSuggestedWord(null)}
+                        className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors shrink-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={applyCorrection}
+                        className="h-8 px-4 text-xs gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 active:scale-95 transition-all rounded-xl border-none shrink-0"
+                      >
+                        <Check className="h-3.5 w-3.5" />
+                        Так
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
               )}
-            </Button>
+            </AnimatePresence>
           </div>
         </div>
 

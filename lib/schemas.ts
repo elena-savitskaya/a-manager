@@ -8,11 +8,15 @@ export const ExampleSchema = z.object({
 export const TranslationResultSchema = z.object({
   translation: z.string().min(1, "Translation is required"),
   examples: z.array(ExampleSchema).default([]),
-  correctedWord: z.string().optional(),
+  correctedWord: z.string().nullable().optional(),
 });
 
 export const WordFormSchema = z.object({
-  word: z.string().min(1, "Word is required").max(100),
+  word: z
+    .string()
+    .min(1, "Слово обов'язкове")
+    .max(100, "Слово занадто довге")
+    .regex(/^[a-zA-Z\s'-/]+$/, "Дозволені лише латинські літери"),
 });
 
 export type TranslationResult = z.infer<typeof TranslationResultSchema>;

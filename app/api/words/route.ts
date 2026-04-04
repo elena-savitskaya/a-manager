@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { capitalize } from "@/lib/utils";
+import { WordFormSchema } from "@/lib/schemas";
 
 /**
  * GET /api/words
@@ -50,16 +52,21 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { word, translation, examples } = body ?? {};
 
-  if (!word || typeof word !== "string" || !word.trim()) {
-    return NextResponse.json({ error: "Field 'word' is required" }, { status: 400 });
+  const normalizedWord = capitalize(word as string);
+  const normalizedTranslation = capitalize(translation as string);
+
+  // Validate input
+  const wordValidation = WordFormSchema.safeParse({ word: normalizedWord });
+  if (!wordValidation.success) {
+    return NextResponse.json({ error: wordValidation.error.issues[0].message }, { status: 400 });
   }
 
   const { data, error } = await supabase
     .from("words")
     .insert({
       user_id: user.id,
-      word: word.trim(),
-      translation: translation ?? null,
+      word: normalizedWord,
+      translation: normalizedTranslation || null,
       examples: examples ?? null,
       status: "new",
     })

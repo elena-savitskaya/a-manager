@@ -7,6 +7,7 @@ import { AIService } from "@/lib/services/ai-service";
 import { ActionState } from "@/types";
 import { getRequiredServerUser } from "@/lib/utils/get-required-server-user";
 import { WORD_STATUS } from "@/lib/constants";
+import { capitalize } from "@/lib/utils";
 
 export async function translateWordAction(word: string): Promise<ActionState> {
   const { data, error } = await AIService.translateWord(word);
@@ -19,14 +20,14 @@ export async function translateWordAction(word: string): Promise<ActionState> {
 }
 
 export async function addWordAction(prevState: ActionState, formData: FormData): Promise<ActionState> {
-  const word = formData.get("word") as string;
-  const translation = formData.get("translation") as string;
+  const word = capitalize(formData.get("word") as string);
+  const translation = capitalize(formData.get("translation") as string);
   const examplesJson = formData.get("examples") as string;
 
   // Validate input
   const wordValidation = WordFormSchema.safeParse({ word });
   if (!wordValidation.success) {
-    return { error: "Некоректне слово" };
+    return { error: wordValidation.error.issues[0].message };
   }
 
   let examples;
@@ -55,12 +56,12 @@ export async function addWordAction(prevState: ActionState, formData: FormData):
     .maybeSingle();
 
   if (existing) {
-    return { error: `Слово "${word.trim()}" вже є у вашому словнику.` };
+    return { error: `Слово "${word}" вже є у вашому словнику.` };
   }
 
   const { error: dbError } = await supabase.from("words").insert({
     user_id: user.id,
-    word: word.trim(),
+    word,
     translation,
     examples,
     status: WORD_STATUS.NEW,
@@ -77,6 +78,10 @@ export async function addWordAction(prevState: ActionState, formData: FormData):
 
 export async function updateWordAction(id: string, updates: { translation?: string; examples?: unknown; status?: string }) {
   const { supabase } = await getRequiredServerUser();
+
+  if (updates.translation) {
+    updates.translation = capitalize(updates.translation);
+  }
 
   const { error } = await supabase
     .from("words")
