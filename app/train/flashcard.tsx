@@ -79,7 +79,7 @@ export function Flashcard({
   return (
     <div
       className={cn(
-        "relative w-full max-w-md mx-auto h-[450px] perspective-1000",
+        "relative w-full max-w-md mx-auto h-[350px] sm:h-[400px] perspective-1000",
         className
       )}
     >
@@ -99,7 +99,6 @@ export function Flashcard({
           isInteractive ? "cursor-grab active:cursor-grabbing" : ""
         )}
       >
-
         <motion.div
           initial={false}
           animate={{ rotateY: isFlipped ? 180 : 0 }}

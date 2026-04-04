@@ -2,7 +2,6 @@
 
 import { Word } from "@/types";
 import { useState, useCallback, useEffect } from "react";
-import { TrainingHeader } from "./training-header";
 import { TrainingProgress } from "./training-progress";
 import { Flashcard } from "./flashcard";
 import { updateWordStatus } from "@/app/actions/words";
@@ -10,7 +9,7 @@ import { WORD_STATUS } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { MatchingGame } from "./matching-game";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, BookOpen, RefreshCcw } from "lucide-react";
+import { CheckCircle2, BookOpen, RefreshCcw, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTrainingStore } from "@/lib/store/training-store";
@@ -117,9 +116,39 @@ export function TrainClient({ initialWords }: TrainClientProps) {
     );
   }
 
+  if (phase === "start") {
+    return (
+      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center gap-8 py-8 w-full px-4 sm:px-5">
+        <div className="flex flex-col gap-2 items-center justify-center text-center">
+          <h3 className="text-4xl font-extrabold tracking-tight">
+            Готові почати тренування?
+          </h3>
+          <p className="text-lg text-muted-foreground max-w-lg">
+            Почніть вивчення нових слів за допомогою флеш-карток.
+          </p>
+        </div>
+        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center animate-pulse">
+          <PlayCircle className="w-12 h-12 text-primary" />
+        </div>
+        <Button
+          onClick={() => setPhase("flashcards")}
+          className="w-full max-w-sm h-12 text-md font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all active:scale-95 group"
+        >
+          Почати тренування
+          <motion.span
+            className="ml-2"
+            animate={{ x: [0, 4, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          >
+            →
+          </motion.span>
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-8 py-8 w-full px-4 sm:px-5">
-      <TrainingHeader />
       <div className="flex flex-col gap-2">
         <TrainingProgress
           current={phase === "flashcards" ? currentIndex + 1 : words.length}

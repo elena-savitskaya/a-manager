@@ -5,12 +5,12 @@ import { Word } from '@/types';
 interface TrainingState {
   words: Word[];
   currentIndex: number;
-  phase: 'flashcards' | 'matching' | 'completed';
+  phase: 'start' | 'flashcards' | 'matching' | 'completed';
   
   // Actions
   initSession: (words: Word[]) => void;
   setNextIndex: () => void;
-  setPhase: (phase: 'flashcards' | 'matching' | 'completed') => void;
+  setPhase: (phase: 'start' | 'flashcards' | 'matching' | 'completed') => void;
   resetSession: () => void;
 }
 
@@ -19,7 +19,7 @@ export const useTrainingStore = create<TrainingState>()(
     (set) => ({
       words: [],
       currentIndex: 0,
-      phase: 'flashcards',
+      phase: 'start',
 
       initSession: (incomingWords) => set((state) => {
         // Only initialize if the current session is empty or words have changed significantly
@@ -30,7 +30,7 @@ export const useTrainingStore = create<TrainingState>()(
         return { 
           words: incomingWords, 
           currentIndex: 0, 
-          phase: incomingWords.length === 0 ? 'completed' : 'flashcards' 
+          phase: incomingWords.length === 0 ? 'completed' : 'start' 
         };
       }),
 
@@ -43,7 +43,7 @@ export const useTrainingStore = create<TrainingState>()(
       resetSession: () => set({ 
         words: [], 
         currentIndex: 0, 
-        phase: 'flashcards' 
+        phase: 'start' 
       }),
     }),
     {

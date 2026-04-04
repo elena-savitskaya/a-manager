@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { PlusCircle, BookOpen, Lightbulb, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -47,7 +50,14 @@ export function DashboardActions() {
                   {action.description}
                 </p>
                 <div className="flex items-center text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Перейти <ArrowRight className="ml-1 w-6 h-6" />
+                  Перейти
+                  <motion.span
+                    className="ml-2"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    →
+                  </motion.span>
                 </div>
               </CardContent>
             </Card>

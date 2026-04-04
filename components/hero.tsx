@@ -42,8 +42,10 @@ export function Hero() {
       <p className="text-lg text-muted-foreground max-w-md">
         Збільшуйте свій словниковий запас за допомогою розумних тренувань
       </p>
-      <Button asChild size="lg" className="font-bold">
-        <Link href="/auth/sign-up">ПОЧАТИ</Link>
+      <Button asChild size="lg" className="h-14 px-8 text-lg font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all active:scale-95 group">
+        <Link href="/auth/sign-up">
+          ПОЧАТИ
+        </Link>
       </Button>
     </div>
   );
