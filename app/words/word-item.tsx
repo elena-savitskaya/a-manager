@@ -4,10 +4,13 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, BookOpen, Quote, Trash2, Pencil, Eye } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { deleteWordAction } from "@/app/actions/words";
+import { deleteWordAction, repeatWordAction } from "@/app/actions/words";
 import { EditWordDialog } from "./edit-word-dialog";
 import { BrandedSpinner } from "@/components/ui/loader";
+import { RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -38,6 +41,7 @@ interface WordItemProps {
     word: string;
     translation: string;
     status: string;
+    progress: number | null;
     examples: { en: string; ua: string }[];
   };
 }
@@ -47,6 +51,7 @@ export function WordItem({ word }: WordItemProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRepeating, setIsRepeating] = useState(false);
   const examples = Array.isArray(word.examples) ? word.examples : [];
 
   async function handleDelete() {
@@ -60,10 +65,28 @@ export function WordItem({ word }: WordItemProps) {
     }
   }
 
+  async function handleRepeat() {
+    setIsRepeating(true);
+    try {
+      const { success, error } = await repeatWordAction(word.id);
+      if (success) {
+        toast.success("Слово відправлено на повторення");
+        setIsSheetOpen(false);
+      } else {
+        toast.error("Помилка: " + error);
+      }
+    } catch (error) {
+      console.error("Failed to repeat:", error);
+      toast.error("Невідома помилка");
+    } finally {
+      setIsRepeating(false);
+    }
+  }
+
   return (
     <>
       <Card
-        className="relative overflow-hidden group border-none bg-background/50 backdrop-blur-sm shadow-sm rounded-2xl transition-all duration-200 hover:bg-background/80"
+        className="relative overflow-hidden group border border-foreground/10 dark:border-none bg-background/50 backdrop-blur-sm shadow-sm rounded-2xl transition-all duration-200 hover:bg-background/80"
       >
         <div className="p-4 flex items-center justify-between gap-4">
           <div className="flex flex-col gap-2 flex-1 min-w-0">
@@ -75,7 +98,8 @@ export function WordItem({ word }: WordItemProps) {
             </p>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -86,7 +110,7 @@ export function WordItem({ word }: WordItemProps) {
                   <MoreVertical className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" sideOffset={-6} alignOffset={8} className="w-48 rounded-2xl border-none shadow-xl bg-background/95 backdrop-blur-xl p-1.5 ring-1 ring-foreground/5">
+              <DropdownMenuContent align="end" sideOffset={-6} alignOffset={8} className="w-48 rounded-2xl border border-foreground/10 dark:border-none shadow-xl bg-background/95 backdrop-blur-xl p-1.5 ring-1 ring-foreground/10 dark:ring-foreground/5">
                 <DropdownMenuItem
                   onClick={() => setIsSheetOpen(true)}
                   className="gap-3 py-3 px-4 focus:bg-primary/5 focus:text-primary rounded-xl cursor-pointer transition-all duration-200 font-medium"
@@ -119,7 +143,7 @@ export function WordItem({ word }: WordItemProps) {
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent side="right" className="w-full sm:max-w-md border-l-0 sm:border-l bg-background/95 backdrop-blur-xl p-0 overflow-hidden">
           <div className="h-full flex flex-col">
-            <SheetHeader className="p-6 pb-4 bg-muted/30 border-b border-foreground/5 shrink-0">
+            <SheetHeader className="p-6 pb-4 bg-muted/50 dark:bg-muted/30 border-b border-foreground/10 dark:border-foreground/5 shrink-0">
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary/10">
@@ -133,12 +157,34 @@ export function WordItem({ word }: WordItemProps) {
                   </div>
                 </div>
 
-                <Badge
-                  variant={word.status === "learned" ? "info" : "success"}
-                  className="rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest shadow-sm"
-                >
-                  {word.status === "learned" ? "Вивчено" : "У процесі вивчення"}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant={word.status === "learned" ? "secondary" : "success"}
+                    className={cn(
+                      "rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest border-none shadow-sm",
+                      word.status === "learned" ? "bg-primary/10 text-primary" : "bg-emerald-500/10 text-emerald-500"
+                    )}
+                  >
+                    {word.status === "learned" ? "Вивчено" : "В процесі"}
+                  </Badge>
+
+                  {word.status === "learned" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRepeat}
+                      disabled={isRepeating}
+                      className="h-7 rounded-full px-3 text-[10px] font-bold uppercase tracking-widest border-primary/20 hover:bg-primary/5 text-primary gap-1.5"
+                    >
+                      {isRepeating ? (
+                        <BrandedSpinner size={12} />
+                      ) : (
+                        <RefreshCw className="w-3 h-3" />
+                      )}
+                      Повторити
+                    </Button>
+                  )}
+                </div>
               </div>
             </SheetHeader>
 
@@ -176,7 +222,7 @@ export function WordItem({ word }: WordItemProps) {
               )}
             </div>
 
-            <div className="p-6 bg-muted/10 border-t border-foreground/5 shrink-0 flex sm:flex-row flex-col gap-3">
+            <div className="p-6 bg-muted/10 border-t border-foreground/5 shrink-0 flex sm:flex-row flex-col gap-3 mt-auto">
               <Button
                 variant="destructive"
                 onClick={() => setIsDeleteDialogOpen(true)}

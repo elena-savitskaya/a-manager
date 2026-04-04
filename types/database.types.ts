@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           examples: Json | null
           id: string
+          progress: number | null
           status: string
           translation: string | null
           user_id: string
@@ -28,6 +29,7 @@ export type Database = {
           created_at?: string
           examples?: Json | null
           id?: string
+          progress?: number | null
           status?: string
           translation?: string | null
           user_id: string
@@ -37,6 +39,7 @@ export type Database = {
           created_at?: string
           examples?: Json | null
           id?: string
+          progress?: number | null
           status?: string
           translation?: string | null
           user_id?: string

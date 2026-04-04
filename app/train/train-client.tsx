@@ -13,6 +13,7 @@ import { CheckCircle2, BookOpen, RefreshCcw, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTrainingStore } from "@/lib/store/training-store";
+import { incrementWordsProgress } from "@/app/actions/words";
 
 interface TrainClientProps {
   initialWords: Word[];
@@ -46,20 +47,11 @@ export function TrainClient({ initialWords }: TrainClientProps) {
     }
   }, [hasHydrated, initialWords, initSession]);
 
-  const handleNext = async (know: boolean) => {
+  const handleNext = async (know: boolean = true) => {
     const currentWord = words[currentIndex];
     if (!currentWord) return;
 
     setDirection(know ? 1 : -1);
-
-    // Optimistically update DB progress if they know it
-    if (know) {
-      const nextStatus = currentWord.status === WORD_STATUS.NEW
-        ? WORD_STATUS.LEARNING
-        : WORD_STATUS.LEARNED;
-
-      updateWordStatus(currentWord.id, nextStatus);
-    }
 
     // Give a small delay for the animation to start before switching index
     setTimeout(() => {
@@ -70,6 +62,12 @@ export function TrainClient({ initialWords }: TrainClientProps) {
         setPhase("matching");
       }
     }, 50);
+  };
+
+  const handleMatchingComplete = async () => {
+    const ids = words.map(w => w.id);
+    await incrementWordsProgress(ids);
+    setPhase("completed");
   };
 
   const handleReset = () => {
@@ -225,7 +223,7 @@ export function TrainClient({ initialWords }: TrainClientProps) {
             >
               <MatchingGame
                 words={words}
-                onComplete={() => setPhase("completed")}
+                onComplete={handleMatchingComplete}
               />
             </motion.div>
           )}

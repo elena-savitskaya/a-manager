@@ -8,7 +8,7 @@ import { Word } from "@/types";
 
 interface FlashcardProps {
   word: Word;
-  onNext: (know: boolean) => void;
+  onNext: (direction?: boolean) => void;
   isFlipped: boolean;
   onFlip: () => void;
   isInteractive?: boolean;

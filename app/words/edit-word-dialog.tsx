@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GradientInput } from "@/components/ui/gradient-input";
 import { updateWordAction } from "@/app/actions/words";
-import { Plus, Trash2, Save, Pencil, RotateCcw } from "lucide-react";
+import { Plus, Trash2, Save, Pencil } from "lucide-react";
 import { BrandedSpinner } from "@/components/ui/loader";
 import { toast } from "sonner";
 
@@ -174,10 +174,9 @@ export function EditWordDialog({ word, open, onOpenChange }: EditWordDialogProps
             <Button
               variant="ghost"
               onClick={() => onOpenChange(false)}
-              className="flex-1 font-bold text-muted-foreground hover:bg-foreground/5 gap-2"
+              className="flex-1 font-bold text-muted-foreground hover:bg-foreground/5 h-12"
               disabled={isSaving}
             >
-              <RotateCcw className="w-5 h-5" />
               Скасувати
             </Button>
             <Button

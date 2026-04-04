@@ -158,3 +158,79 @@ export async function updateWordStatus(id: string, status: string) {
   revalidatePath("/");
   return { success: true };
 }
+
+export async function incrementWordsProgress(ids: string[]) {
+  const { supabase } = await getRequiredServerUser();
+
+  // Fetch current progress to decide new status
+  const { data: words, error: fetchError } = await supabase
+    .from("words")
+    .select("id, progress, status")
+    .in("id", ids);
+
+  if (fetchError) {
+    console.error("Error fetching words for progress increment:", fetchError);
+    return { error: fetchError.message };
+  }
+
+  const updates = words.map((w) => {
+    const newProgress = (w.progress || 0) + 1;
+    let newStatus = w.status;
+
+    if (newProgress >= 5) {
+      newStatus = WORD_STATUS.LEARNED;
+    } else if (newProgress > 0) {
+      newStatus = WORD_STATUS.LEARNING;
+    }
+
+    return {
+      id: w.id,
+      progress: newProgress,
+      status: newStatus,
+    };
+  });
+
+  // Use a recursive or bulk update. Unfortunately Supabase update only works with a single filter unless it's a batch update with an array of objects which it isn't.
+  // Actually, we can use an RPC or just run them in parallel if the list is small (it's 6 words).
+  const updatePromises = updates.map((u) =>
+    supabase
+      .from("words")
+      .update({ progress: u.progress, status: u.status })
+      .eq("id", u.id)
+  );
+
+  const results = await Promise.all(updatePromises);
+  const error = results.find((r) => r.error)?.error;
+
+  if (error) {
+    console.error("Error incrementing words progress:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/words");
+  revalidatePath("/train");
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function repeatWordAction(id: string) {
+  const { supabase } = await getRequiredServerUser();
+
+  const { error } = await supabase
+    .from("words")
+    .update({ 
+      status: WORD_STATUS.LEARNING,
+      progress: 0 
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error resetting word for repetition:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/words");
+  revalidatePath("/train");
+  revalidatePath("/");
+  return { success: true };
+}
