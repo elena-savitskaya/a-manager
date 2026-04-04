@@ -29,11 +29,6 @@ export function Flashcard({
   const rotate = useTransform(x, [-200, 200], [-30, 30]);
   const opacity = useTransform(x, [-250, -200, 0, 200, 250], [0, 1, 1, 1, 0]);
 
-  const greenOpacity = useTransform(x, [10, 100], [0, 1]);
-  const redOpacity = useTransform(x, [-10, -100], [0, 1]);
-  const labelScale = useTransform(x, [-150, 0, 150], [1.2, 0.8, 1.2]);
-  const tintOpacity = useTransform(x, [-150, 0, 150], [0.3, 0, 0.3]);
-
   useEffect(() => {
     x.set(0);
   }, [word.id, x]);
@@ -108,18 +103,6 @@ export function Flashcard({
         >
           {/* Front Side */}
           <Card className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden shadow-none">
-            <motion.div
-              style={{ opacity: greenOpacity, scale: labelScale }}
-              className="absolute top-12 right-12 border-4 border-emerald-500 rounded-xl px-4 py-1 rotate-12 pointer-events-none"
-            >
-              <span className="text-emerald-500 font-black text-2xl tracking-tighter uppercase font-uk">Знаю</span>
-            </motion.div>
-            <motion.div
-              style={{ opacity: redOpacity, scale: labelScale }}
-              className="absolute top-12 left-12 border-4 border-rose-500 rounded-xl px-4 py-1 -rotate-12 pointer-events-none"
-            >
-              <span className="text-rose-500 font-black text-2xl tracking-tighter uppercase font-uk">Важко</span>
-            </motion.div>
             <h3 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none">
               {word.word}
             </h3>
@@ -130,18 +113,6 @@ export function Flashcard({
             className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-900 overflow-hidden shadow-none"
             style={{ transform: "rotateY(180deg)" }}
           >
-            <motion.div
-              style={{ opacity: greenOpacity, scale: labelScale }}
-              className="absolute top-12 right-12 border-4 border-emerald-500 rounded-xl px-4 py-1 rotate-12 pointer-events-none"
-            >
-              <span className="text-emerald-500 font-black text-2xl tracking-tighter uppercase font-uk">Знаю</span>
-            </motion.div>
-            <motion.div
-              style={{ opacity: redOpacity, scale: labelScale }}
-              className="absolute top-12 left-12 border-4 border-rose-500 rounded-xl px-4 py-1 -rotate-12 pointer-events-none"
-            >
-              <span className="text-rose-500 font-black text-2xl tracking-tighter uppercase font-uk">Важко</span>
-            </motion.div>
             <h3 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none">
               {word.translation}
             </h3>
