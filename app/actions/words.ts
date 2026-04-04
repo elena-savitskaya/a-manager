@@ -154,7 +154,6 @@ export async function updateWordStatus(id: string, status: string) {
   }
 
   revalidatePath("/words");
-  revalidatePath("/train");
   revalidatePath("/");
   return { success: true };
 }
@@ -208,7 +207,6 @@ export async function incrementWordsProgress(ids: string[]) {
   }
 
   revalidatePath("/words");
-  revalidatePath("/train");
   revalidatePath("/");
   return { success: true };
 }
@@ -230,7 +228,6 @@ export async function repeatWordAction(id: string) {
   }
 
   revalidatePath("/words");
-  revalidatePath("/train");
   revalidatePath("/");
   return { success: true };
 }

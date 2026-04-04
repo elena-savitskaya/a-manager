@@ -74,7 +74,7 @@ export function Flashcard({
   return (
     <div
       className={cn(
-        "relative w-full max-w-md mx-auto h-[350px] sm:h-[400px] perspective-1000",
+        "relative w-full max-w-md mx-auto h-[320px] sm:h-[350px] perspective-1000",
         className
       )}
     >

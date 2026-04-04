@@ -40,6 +40,16 @@ export function TrainClient({ initialWords }: TrainClientProps) {
     setHasHydrated(true);
   }, []);
 
+  // Navigation guard: Reset completed session when navigating away from /train
+  useEffect(() => {
+    return () => {
+      const state = useTrainingStore.getState();
+      if (window.location.pathname !== "/train" && state.phase === "completed") {
+        state.resetSession();
+      }
+    };
+  }, []);
+
   // Initialize session only once when needed
   useEffect(() => {
     if (hasHydrated) {
@@ -71,7 +81,11 @@ export function TrainClient({ initialWords }: TrainClientProps) {
   };
 
   const handleReset = () => {
-    resetSession();
+    // We clear the storage directly to avoid a synchronous React re-render 
+    // of the current component before the page successfully reloads.
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("training-session-storage");
+    }
     window.location.reload();
   };
 
@@ -145,6 +159,10 @@ export function TrainClient({ initialWords }: TrainClientProps) {
     );
   }
 
+  if (words.length === 0) {
+    return null;
+  }
+
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-8 py-8 w-full px-4 sm:px-5">
       <div className="flex flex-col gap-2">
@@ -157,7 +175,7 @@ export function TrainClient({ initialWords }: TrainClientProps) {
             {phase === "flashcards" ? "Етап 1: Картки" : "Етап 2: Відповідності"}
           </span>
           <span className="text-xs font-medium text-muted-foreground/60">
-            {phase === "flashcards" ? "Повторення" : "Зназодження пар для слів"}
+            {phase === "flashcards" ? "Повторення" : "Знаходження пар для слів"}
           </span>
         </div>
       </div>

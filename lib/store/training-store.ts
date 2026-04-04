@@ -22,15 +22,17 @@ export const useTrainingStore = create<TrainingState>()(
       phase: 'start',
 
       initSession: (incomingWords) => set((state) => {
-        // Only initialize if the current session is empty or words have changed significantly
-        // This prevents overwriting an ongoing session with fresh words from the server
-        if (state.words.length > 0 && state.phase !== 'completed') {
+        // Only initialize if the current session is empty
+        // This prevents overwriting an ongoing OR completed session during фоновий re-renders/RSC refreshes
+        if (state.words.length > 0) {
           return state;
         }
         return { 
           words: incomingWords, 
           currentIndex: 0, 
-          phase: incomingWords.length === 0 ? 'completed' : 'start' 
+          phase: incomingWords.length === 0 
+            ? 'completed' 
+            : (state.phase === 'flashcards' ? 'flashcards' : 'start')
         };
       }),
 
