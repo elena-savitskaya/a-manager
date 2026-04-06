@@ -164,7 +164,7 @@ export function TrainClient({ initialWords }: TrainClientProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto flex flex-col gap-8 py-8 w-full px-4 sm:px-5">
+    <div className="overflow-hidden max-w-4xl mx-auto flex flex-col gap-8 py-8 w-full px-4 sm:px-5">
       <div className="flex flex-col gap-2">
         <TrainingProgress
           current={phase === "flashcards" ? currentIndex + 1 : words.length}

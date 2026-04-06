@@ -101,25 +101,47 @@ export function Flashcard({
           className="w-full h-full relative preserve-3d cursor-pointer shadow-2xl rounded-[2.5rem]"
           onClick={() => isInteractive && onFlip()}
         >
-          {/* Front Side */}
-          <Card className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden shadow-none">
-            <h3 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none">
-              {word.word}
-            </h3>
-            <p className="mt-4 text-zinc-500 dark:text-zinc-400 font-medium text-sm uppercase tracking-[0.2em] opacity-40">Натисніть, щоб перевернути</p>
-          </Card>
+          {/* Helper for dynamic font size */}
+          {(() => {
+            const getFontSize = (text: string) => {
+              const len = text.length;
+              if (len <= 12) return "text-5xl";
+              if (len <= 25) return "text-4xl";
+              if (len <= 50) return "text-3xl";
+              if (len <= 80) return "text-2xl";
+              return "text-xl";
+            };
 
-          <Card
-            className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-900 overflow-hidden shadow-none"
-            style={{ transform: "rotateY(180deg)" }}
-          >
-            <h3 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none">
-              {word.translation}
-            </h3>
-            <div className="mt-6">
-              <p className="text-zinc-500 dark:text-zinc-400 font-medium text-sm uppercase tracking-[0.2em] opacity-40">Переклад</p>
-            </div>
-          </Card>
+            return (
+              <>
+                {/* Front Side */}
+                <Card className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden shadow-none">
+                  <h3 className={cn(
+                    "font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none text-balance",
+                    getFontSize(word.word)
+                  )}>
+                    {word.word}
+                  </h3>
+                  <p className="mt-4 text-zinc-500 dark:text-zinc-400 font-medium text-sm uppercase tracking-[0.2em] opacity-40">Натисніть, щоб перевернути</p>
+                </Card>
+
+                <Card
+                  className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center rounded-[2.5rem] backface-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-900 overflow-hidden shadow-none"
+                  style={{ transform: "rotateY(180deg)" }}
+                >
+                  <h3 className={cn(
+                    "font-black text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight select-none text-balance",
+                    getFontSize(word.translation || "")
+                  )}>
+                    {word.translation}
+                  </h3>
+                  <div className="mt-6">
+                    <p className="text-zinc-500 dark:text-zinc-400 font-medium text-sm uppercase tracking-[0.2em] opacity-40">Переклад</p>
+                  </div>
+                </Card>
+              </>
+            );
+          })()}
         </motion.div>
       </motion.div>
     </div>
