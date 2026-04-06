@@ -41,7 +41,7 @@ export function AddWordForm() {
     if (!word.trim()) return;
 
     // Client-side validation for English word/phrase
-    const latinOnlyRegex = /^[a-zA-Z\s'-/]+$/;
+    const latinOnlyRegex = /^[a-zA-Z\s'’\-/]+$/;
     if (!latinOnlyRegex.test(word.trim())) {
       toast.error("Дозволені лише латинські літери");
       return;
@@ -53,7 +53,7 @@ export function AddWordForm() {
       const response = await fetch("/api/ai/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ word: word.trim() }),
+        body: JSON.stringify({ word: word.trim().replace(/’/g, "'") }),
       });
 
       const data = await response.json();

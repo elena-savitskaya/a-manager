@@ -20,7 +20,7 @@ export async function translateWordAction(word: string): Promise<ActionState> {
 }
 
 export async function addWordAction(prevState: ActionState, formData: FormData): Promise<ActionState> {
-  const word = capitalize(formData.get("word") as string);
+  const word = capitalize(formData.get("word") as string).replace(/’/g, "'");
   const translation = capitalize(formData.get("translation") as string);
   const examplesJson = formData.get("examples") as string;
 
