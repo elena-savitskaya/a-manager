@@ -41,7 +41,7 @@ export function AddWordForm() {
     if (!word.trim()) return;
 
     // Client-side validation for English word/phrase
-    const latinOnlyRegex = /^[a-zA-Z\s'’\-/]+$/;
+    const latinOnlyRegex = /^[a-zA-Z\s'’\-\/?]+$/;
     if (!latinOnlyRegex.test(word.trim())) {
       toast.error("Дозволені лише латинські літери");
       return;

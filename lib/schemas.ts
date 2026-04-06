@@ -16,7 +16,7 @@ export const WordFormSchema = z.object({
     .string()
     .min(1, "Слово обов'язкове")
     .max(100, "Слово занадто довге")
-    .regex(/^[a-zA-Z\s'’\-/]+$/, "Дозволені лише латинські літери"),
+    .regex(/^[a-zA-Z\s'’\-\/?]+$/, "Дозволені лише латинські літери"),
 });
 
 export type TranslationResult = z.infer<typeof TranslationResultSchema>;
