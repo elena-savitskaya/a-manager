@@ -6,6 +6,7 @@ import { WORD_STATUS } from "@/lib/constants";
 import { WordsListHeader } from "./words-list-header";
 import { WordsTabs } from "./words-tabs";
 import { WordsEmptyState } from "./words-empty-state";
+import { useSearchParams } from "next/navigation";
 
 interface WordsListClientProps {
   initialWords: any[];
@@ -15,14 +16,24 @@ export function WordsListClient({ initialWords }: WordsListClientProps) {
   const [activeTab, setActiveTab] = useState("all");
   const [isMounted, setIsMounted] = useState(false);
 
-  // Load tab from localStorage on mount
+  const searchParams = useSearchParams();
+
+  // Handle URL tab parameter and localStorage
   useEffect(() => {
-    const savedTab = localStorage.getItem("words_active_tab");
-    if (savedTab) {
-      setActiveTab(savedTab);
+    const urlTab = searchParams.get("tab");
+    const validTabs = ["all", "processing", "learned"];
+    
+    if (urlTab && validTabs.includes(urlTab)) {
+      setActiveTab(urlTab);
+      localStorage.setItem("words_active_tab", urlTab);
+    } else {
+      const savedTab = localStorage.getItem("words_active_tab");
+      if (savedTab) {
+        setActiveTab(savedTab);
+      }
     }
     setIsMounted(true);
-  }, []);
+  }, [searchParams]);
 
   // Update tab and save to localStorage
   const handleTabChange = (value: string) => {

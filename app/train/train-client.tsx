@@ -105,7 +105,8 @@ export function TrainClient({ initialWords }: TrainClientProps) {
             Тренування завершено!
           </h4>
           <p className="text-muted-foreground text-lg max-w-md">
-            Чудова робота! Продовжуйте в тому ж дусі.
+            <span className="block sm:inline">Чудова робота!</span>{" "}
+            <span className="block sm:inline">Продовжуйте в тому ж дусі.</span>
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
