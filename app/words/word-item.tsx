@@ -99,6 +99,22 @@ export function WordItem({ word }: WordItemProps) {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
+            {word.status === "learned" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleRepeat}
+                disabled={isRepeating}
+                className="w-12 h-12 rounded-full hover:bg-primary/10 text-muted-foreground/90 hover:text-primary transition-all active:scale-95"
+                title="Повторити"
+              >
+                {isRepeating ? (
+                  <BrandedSpinner size={20} />
+                ) : (
+                  <RefreshCw className="h-6 w-6" />
+                )}
+              </Button>
+            )}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
