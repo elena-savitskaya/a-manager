@@ -10,7 +10,7 @@ export default function WordsPage() {
           Ваші Слова
         </h3>
         <p className="text-lg text-muted-foreground max-w-lg">
-          Тут зібрані всі слова, які ви додали для вивчення. Відстежуйте свій прогрес та повторюйте старі слова.
+          Тут зібрані всі слова, які ви додали для вивчення.
         </p>
       </div>
       <div className="w-full">

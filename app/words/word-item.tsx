@@ -44,9 +44,10 @@ interface WordItemProps {
     progress: number | null;
     examples: { en: string; ua: string }[];
   };
+  showRepeatButton?: boolean;
 }
 
-export function WordItem({ word }: WordItemProps) {
+export function WordItem({ word, showRepeatButton }: WordItemProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -99,7 +100,7 @@ export function WordItem({ word }: WordItemProps) {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            {word.status === "learned" && (
+            {showRepeatButton && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -184,7 +185,7 @@ export function WordItem({ word }: WordItemProps) {
                     {word.status === "learned" ? "Вивчено" : "В процесі"}
                   </Badge>
 
-                  {word.status === "learned" && (
+                  {showRepeatButton && (
                     <Button
                       variant="outline"
                       size="sm"

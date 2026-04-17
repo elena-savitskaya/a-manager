@@ -15,6 +15,7 @@ interface WordsListClientProps {
 export function WordsListClient({ initialWords }: WordsListClientProps) {
   const [activeTab, setActiveTab] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [searchQuery, setSearchQuery] = useState("");
   const [isMounted, setIsMounted] = useState(false);
 
   const searchParams = useSearchParams();
@@ -67,12 +68,22 @@ export function WordsListClient({ initialWords }: WordsListClientProps) {
   // Memoized filtering and sorting
   const processedWords = useMemo(() => {
     let result = initialWords.filter((word) => {
-      if (activeTab === "processing") {
-        return word.status !== WORD_STATUS.LEARNED;
+      // Filter by tab
+      if (activeTab === "processing" && word.status === WORD_STATUS.LEARNED) {
+        return false;
       }
-      if (activeTab === "learned") {
-        return word.status === WORD_STATUS.LEARNED;
+      if (activeTab === "learned" && word.status !== WORD_STATUS.LEARNED) {
+        return false;
       }
+
+      // Filter by search query
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const matchesWord = word.word.toLowerCase().includes(query);
+        const matchesTranslation = word.translation.toLowerCase().includes(query);
+        return matchesWord || matchesTranslation;
+      }
+
       return true;
     });
 
@@ -92,7 +103,7 @@ export function WordsListClient({ initialWords }: WordsListClientProps) {
       }
       return 0;
     });
-  }, [initialWords, activeTab, sortBy]);
+  }, [initialWords, activeTab, sortBy, searchQuery]);
 
   if (!isMounted) {
     return <div className="h-[200px]" />; // Placeholder to avoid layout shift
@@ -106,6 +117,8 @@ export function WordsListClient({ initialWords }: WordsListClientProps) {
           activeTab={activeTab} 
           sortBy={sortBy}
           onSortChange={handleSortChange}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
         />
         
         <WordsTabs 
@@ -120,7 +133,11 @@ export function WordsListClient({ initialWords }: WordsListClientProps) {
         ) : (
           <div className="flex flex-col gap-3">
             {processedWords.map((item) => (
-              <WordItem key={item.id} word={item} />
+              <WordItem 
+                key={item.id} 
+                word={item} 
+                showRepeatButton={activeTab === "learned"} 
+              />
             ))}
           </div>
         )}
