@@ -119,34 +119,21 @@ export async function getWordsForTraining(): Promise<{ success: boolean; data?: 
     const { user, supabase } = await getRequiredServerUser();
     if (!user) return { success: false, error: "Необхідна авторизація" };
 
-    // Fetch NEW words
-    const { data: newWords, error: newError } = await supabase
+    // Fetch all words that are NEW or LEARNING
+    const { data: words, error } = await supabase
       .from("words")
       .select("*")
       .eq("user_id", user.id)
-      .eq("status", WORD_STATUS.NEW)
-      .limit(10);
+      .in("status", [WORD_STATUS.NEW, WORD_STATUS.LEARNING]);
 
-    if (newError) throw newError;
+    if (error) throw error;
 
-    // Fetch LEARNING words
-    const { data: learningWords, error: learningError } = await supabase
-      .from("words")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("status", WORD_STATUS.LEARNING)
-      .limit(15);
-
-    if (learningError) throw learningError;
-
-    const combined = [...(newWords || []), ...(learningWords || [])];
-    
-    if (combined.length === 0) {
+    if (!words || words.length === 0) {
       return { success: true, data: [] };
     }
 
-    // Shuffle and take 6
-    const shuffled = combined.sort(() => 0.5 - Math.random()).slice(0, 6);
+    // Shuffle all qualifying words and take 6
+    const shuffled = words.sort(() => 0.5 - Math.random()).slice(0, 6);
 
     return { success: true, data: shuffled };
   } catch (error: any) {
