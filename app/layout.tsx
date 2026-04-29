@@ -15,27 +15,45 @@ export const metadata: Metadata = {
     default: "WordTrainer — Тренажер Англійських Слів",
     template: "%s | WordTrainer",
   },
-  description: "Ефективний словник та тренажер для швидкого запам'ятовування англійських слів за допомогою розумних вправ.",
-  keywords: ["англійська мова", "вивчити слова", "vocabulary trainer", "словник", "тренажер слів", "WordTrainer"],
+  description:
+    "Ефективний словник та тренажер для швидкого запам'ятовування англійських слів за допомогою розумних вправ.",
+  keywords: [
+    "англійська мова",
+    "вивчити слова",
+    "vocabulary trainer",
+    "словник",
+    "тренажер слів",
+    "WordTrainer",
+  ],
   authors: [{ name: "WordTrainer Team" }],
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/og.png",
+    apple: "/og.png",
   },
   manifest: "/manifest.webmanifest",
   openGraph: {
     title: "WordTrainer — Тренажер Англійських Слів",
-    description: "Збільшуйте свій словниковий запас за допомогою розумних тренувань.",
+    description:
+      "Збільшуйте свій словниковий запас за допомогою розумних тренувань.",
     url: defaultUrl,
     siteName: "WordTrainer",
     locale: "uk_UA",
     type: "website",
-    images: [{ url: "/logo.png" }],
+    images: [
+      {
+        url: new URL("/og.png", defaultUrl).toString(),
+        width: 1200,
+        height: 630,
+        alt: "WordTrainer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "WordTrainer — Тренажер Англійських Слів",
-    description: "Збільшуйте свій словниковий запас за допомогою розумних тренувань.",
+    description:
+      "Збільшуйте свій словниковий запас за допомогою розумних тренувань.",
+    images: [new URL("/og.png", defaultUrl).toString()],
   },
 };
 
@@ -62,9 +80,7 @@ export default function RootLayout({
           <div className="min-h-dvh flex flex-col">
             <Navbar hasEnvVars={hasEnvVars} />
             <TabNav />
-            <main className="flex-grow">
-              {children}
-            </main>
+            <main className="flex-grow">{children}</main>
             <Toaster />
           </div>
         </ThemeProvider>
@@ -72,4 +88,3 @@ export default function RootLayout({
     </html>
   );
 }
-
