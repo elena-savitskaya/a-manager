@@ -33,8 +33,17 @@ Built on **Next.js 15**, **Supabase**, and **AI SDK**, it provides a premium use
 - **Tailwind CSS & Shadcn UI**: Modern, responsive, and "glassmorphism" design.
 
 **Backend & AI:**
-- **Supabase (PostgreSQL)**: Secure word storage and authentication.
-- **Vercel AI SDK**: Flexible integration with Groq and Google Gemini models.
+- **Supabase (PostgreSQL, Auth)**: Backend-as-a-service for data storage and authentication.
+- **AI SDK**: Flexible integration with Groq for AI-powered translations and auto-correction.
+
+---
+
+## 🏗️ Authentication
+
+- **Email/password** authentication
+- **Google OAuth** via Supabase
+- **Redirect-based** flow (/auth/callback)
+- **Session management** via JWT and cookies
 
 ---
 
