@@ -2,7 +2,7 @@
 
 **WordTrainer** is a modern web application for practicing English vocabulary, combining AI-powered translations with proven learning techniques like Flashcards and Matching Games.
 
-Built on **Next.js 15**, **Supabase**, and **AI SDK**, it provides a premium user experience with a focus on speed, aesthetics, and meaningful learning.
+Built on **Next.js 16**, **Supabase**, and **AI SDK**, it provides a premium user experience with a focus on speed, aesthetics, and meaningful learning.
 
 ---
 
