@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
-import { Logo } from "@/components/logo";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { AuthButton } from "@/components/auth-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
@@ -16,7 +16,7 @@ export function Navbar({ hasEnvVars }: NavbarProps) {
       <div className="w-full max-w-5xl flex justify-between items-center py-3 px-4 sm:px-5 text-sm">
         <div className="flex gap-5 items-center font-semibold">
           <Link href="/" className="flex items-center">
-            <Logo size="md" />
+            <Image src="/logo.png" alt="Logo" width={65} height={65} />
           </Link>
         </div>
 

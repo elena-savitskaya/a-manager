@@ -12,7 +12,7 @@ const defaultUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: {
-    default: "WordTrainer — Тренажер Англійських Слів",
+    default: "Тренажер Англійських Слів",
     template: "%s | WordTrainer",
   },
   description:
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     "тренажер слів",
     "WordTrainer",
   ],
-  authors: [{ name: "WordTrainer Team" }],
+  authors: [{ name: "Olena Savytska" }],
   icons: {
-    icon: "/logo.svg",
-    apple: "/logo.svg",
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
   manifest: "/manifest.webmanifest",
   openGraph: {

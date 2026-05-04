@@ -5,8 +5,6 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescri
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
-import { Logo } from "@/components/logo";
-
 interface MobileNavProps {
   authButton: React.ReactNode;
   themeSwitcher: React.ReactNode;
@@ -28,10 +26,10 @@ export function MobileNav({ authButton, themeSwitcher }: MobileNavProps) {
         <div className="p-8 pb-6 border-b border-muted/50 bg-muted/20 backdrop-blur-sm">
           <SheetHeader className="text-left">
             <SheetTitle className="tracking-tight">
-              <Logo size="lg" />
+              WordTrainer
             </SheetTitle>
             <SheetDescription className="text-sm font-medium text-muted-foreground/80 lowercase italic">
-              Ваш інтелектуальний словник
+              - це ваш інтелектуальний словник
             </SheetDescription>
           </SheetHeader>
         </div>
