@@ -15,15 +15,8 @@ export function Hero() {
         {/* Icon Container */}
         <div className="relative flex items-center justify-center p-12 rounded-[2.5rem] bg-muted/30 backdrop-blur-sm border border-foreground/5 shadow-2xl overflow-visible">
           {/* Main Logo Image */}
-          <div className="relative w-24 h-24 md:w-32 md:h-32 z-10 animate-pulse">
-            <Image
-              src="/logo.png"
-              alt="WordTrainer Icon"
-              width={128}
-              height={128}
-              className="object-contain"
-              priority
-            />
+          <div className="relative z-10 scale-150 transform transition-transform group-hover:scale-[1.7] duration-500">
+            <Logo size="lg" />
           </div>
 
           {/* Secondary Brand Icons */}

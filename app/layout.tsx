@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "WordTrainer Team" }],
   icons: {
-    icon: "/og.png",
-    apple: "/og.png",
+    icon: "/logo.svg",
+    apple: "/logo.svg",
   },
   manifest: "/manifest.webmanifest",
   openGraph: {
